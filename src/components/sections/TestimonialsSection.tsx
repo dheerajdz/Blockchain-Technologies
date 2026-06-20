@@ -95,7 +95,7 @@ export default function TestimonialsSection() {
 
               {/* Review Text */}
               <p className="text-white/70 text-xs sm:text-sm leading-relaxed mb-6 font-medium">
-                "{item.text}"
+                &quot;{item.text}&quot;
               </p>
 
               {/* User Bio */}

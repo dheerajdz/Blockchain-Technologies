@@ -28,7 +28,7 @@ export default function AboutSection() {
             </h2>
             <p className="text-xl text-white/60 mb-12 leading-relaxed">
               Founded in 2019 in Mumbai, BlocksScan Technologies is on a mission to
-              democratize blockchain access. We don't just build tools — we craft
+              democratize blockchain access. We don&apos;t just build tools — we craft
               experiences that make decentralized technology accessible to everyone.
             </p>
           </motion.div>

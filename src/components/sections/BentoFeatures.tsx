@@ -157,7 +157,7 @@ export default function BentoFeatures() {
                 <span className="text-[#00FF66]">Active</span>
               </div>
               <div className="bg-white/5 border border-white/5 rounded p-2 text-white/70">
-                "Decode contract function at 0x892a..."
+                &quot;Decode contract function at 0x892a...&quot;
               </div>
               {aiLoading ? (
                 <div className="text-[#00FF66] animate-pulse">Analyzing contract vulnerabilities...</div>
@@ -237,12 +237,12 @@ export default function BentoFeatures() {
                 <span>client.js</span>
                 <span>NodeJS</span>
               </div>
-              <span className="text-[#00FF66] font-semibold">import <span className="text-white">OpenScan</span> from <span className="text-[#EC4899]">'@openscan/sdk'</span>;</span>
+              <span className="text-[#00FF66] font-semibold">import <span className="text-white">OpenScan</span> from <span className="text-[#EC4899]">&apos;@openscan/sdk&apos;</span>;</span>
               <span className="mt-1 text-white/50">const client = new OpenScan(&#123;</span>
-              <span className="text-white/60">&nbsp;&nbsp;network: 'xdc-mainnet',</span>
+              <span className="text-white/60">&nbsp;&nbsp;network: &apos;xdc-mainnet&apos;,</span>
               <span className="text-white/60">&nbsp;&nbsp;apiKey: process.env.API_KEY</span>
               <span className="text-white/50">&#125;);</span>
-              <span className="mt-1 text-white/30">// Fetch latest block height</span>
+              <span className="mt-1 text-white/30">{/* Fetch latest block height */}</span>
               <span className="text-white/60">const block = await client.getBlock();</span>
             </div>
           </motion.div>

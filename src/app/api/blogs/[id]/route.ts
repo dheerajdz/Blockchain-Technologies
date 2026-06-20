@@ -1,5 +1,5 @@
 import dbConnect from '@/lib/db';
-import Blog from '@/models/Blog';
+import Blog from '@/models/blog';
 import { getCurrentAdmin } from '@/lib/adminAuth';
 import { successResponse, errorResponse } from '@/lib/response';
 import mongoose from 'mongoose';

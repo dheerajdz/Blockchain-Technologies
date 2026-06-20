@@ -1,12 +1,10 @@
-import {
-  getTeamsCollection,
-  serializeTeam,
-  validateTeamInput,
-} from "@/models/team";
-import { requireAdmin } from "@/lib/adminAuth";
-import { ObjectId } from "mongodb";
+import dbConnect from '@/lib/db';
+import Team from '@/models/team';
+import { getCurrentAdmin } from '@/lib/adminAuth';
+import { successResponse, errorResponse } from '@/lib/response';
+import mongoose from 'mongoose';
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
 export async function GET(
   request: Request,
@@ -14,25 +12,16 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
+    if (!mongoose.Types.ObjectId.isValid(id)) return errorResponse('Invalid id', 400);
 
-    if (!ObjectId.isValid(id)) {
-      return Response.json({ error: "Invalid id" }, { status: 400 });
-    }
+    await dbConnect();
+    const member = await Team.findOne({ _id: id, isDeleted: false }).lean();
+    if (!member) return errorResponse('Team member not found', 404);
 
-    const collection = await getTeamsCollection();
-    const member = await collection.findOne({ _id: new ObjectId(id) });
-
-    if (!member) {
-      return Response.json({ error: "Not found" }, { status: 404 });
-    }
-
-    return Response.json({ member: serializeTeam(member) });
+    return successResponse(member);
   } catch (error) {
-    console.error("GET /api/team/[id] error:", error);
-    return Response.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    console.error('GET /api/team/[id] error:', error);
+    return errorResponse('Internal server error', 500);
   }
 }
 
@@ -41,48 +30,31 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    try {
-      await requireAdmin();
-    } catch {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const admin = await getCurrentAdmin();
+    if (!admin) return errorResponse('Unauthorized', 401);
 
     const { id } = await params;
+    if (!mongoose.Types.ObjectId.isValid(id)) return errorResponse('Invalid id', 400);
 
-    if (!ObjectId.isValid(id)) {
-      return Response.json({ error: "Invalid id" }, { status: 400 });
-    }
+    const body = await request.json();
+    const { name, role, bio, image, order } = body || {};
 
-    const body = (await request.json()) as Record<string, unknown>;
-    const validation = validateTeamInput(body);
+    if (!name || typeof name !== 'string') return errorResponse('name is required', 400);
+    if (!role || typeof role !== 'string') return errorResponse('role is required', 400);
 
-    if (!validation.valid) {
-      return Response.json({ error: validation.error }, { status: 400 });
-    }
-
-    const collection = await getTeamsCollection();
-    const updated = await collection.findOneAndUpdate(
-      { _id: new ObjectId(id) },
-      {
-        $set: {
-          ...validation.data,
-          updatedAt: new Date(),
-        },
-      },
-      { returnDocument: "after" }
+    await dbConnect();
+    const member = await Team.findByIdAndUpdate(
+      id,
+      { name, role, bio, image, order },
+      { new: true, runValidators: true }
     );
 
-    if (!updated) {
-      return Response.json({ error: "Not found" }, { status: 404 });
-    }
+    if (!member) return errorResponse('Team member not found', 404);
 
-    return Response.json({ member: serializeTeam(updated) });
+    return successResponse(member.toJSON());
   } catch (error) {
-    console.error("PUT /api/team/[id] error:", error);
-    return Response.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    console.error('PUT /api/team/[id] error:', error);
+    return errorResponse('Internal server error', 500);
   }
 }
 
@@ -91,31 +63,24 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    try {
-      await requireAdmin();
-    } catch {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const admin = await getCurrentAdmin();
+    if (!admin) return errorResponse('Unauthorized', 401);
 
     const { id } = await params;
+    if (!mongoose.Types.ObjectId.isValid(id)) return errorResponse('Invalid id', 400);
 
-    if (!ObjectId.isValid(id)) {
-      return Response.json({ error: "Invalid id" }, { status: 400 });
-    }
-
-    const collection = await getTeamsCollection();
-    const result = await collection.deleteOne({ _id: new ObjectId(id) });
-
-    if (result.deletedCount === 0) {
-      return Response.json({ error: "Not found" }, { status: 404 });
-    }
-
-    return Response.json({ success: true });
-  } catch (error) {
-    console.error("DELETE /api/team/[id] error:", error);
-    return Response.json(
-      { error: "Internal server error" },
-      { status: 500 }
+    await dbConnect();
+    const member = await Team.findByIdAndUpdate(
+      id,
+      { isDeleted: true, deletedAt: new Date() },
+      { new: true }
     );
+
+    if (!member) return errorResponse('Team member not found', 404);
+
+    return successResponse({ message: 'Team member deleted successfully' });
+  } catch (error) {
+    console.error('DELETE /api/team/[id] error:', error);
+    return errorResponse('Internal server error', 500);
   }
 }

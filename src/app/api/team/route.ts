@@ -1,72 +1,40 @@
-import {
-  getTeamsCollection,
-  serializeTeam,
-  validateTeamInput,
-} from "@/models/team";
-import { requireAdmin } from "@/lib/adminAuth";
+import dbConnect from '@/lib/db';
+import Team from '@/models/team';
+import { getCurrentAdmin } from '@/lib/adminAuth';
+import { successResponse, errorResponse } from '@/lib/response';
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    const collection = await getTeamsCollection();
-    const members = await collection
-      .find()
+    await dbConnect();
+    const members = await Team.find({ isDeleted: false })
       .sort({ order: 1, createdAt: -1 })
-      .toArray();
-
-    return Response.json({ members: members.map(serializeTeam) });
+      .lean();
+    return successResponse(members);
   } catch (error) {
-    console.error("GET /api/team error:", error);
-    return Response.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    console.error('GET /api/team error:', error);
+    return errorResponse('Internal server error', 500);
   }
 }
 
 export async function POST(request: Request) {
   try {
-    try {
-      await requireAdmin();
-    } catch {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const admin = await getCurrentAdmin();
+    if (!admin) return errorResponse('Unauthorized', 401);
 
-    const body = (await request.json()) as Record<string, unknown>;
-    const validation = validateTeamInput(body);
+    const body = await request.json();
+    const { name, role, bio, image, order } = body || {};
 
-    if (!validation.valid) {
-      return Response.json({ error: validation.error }, { status: 400 });
-    }
+    if (!name || typeof name !== 'string') return errorResponse('name is required', 400);
+    if (!role || typeof role !== 'string') return errorResponse('role is required', 400);
 
-    const collection = await getTeamsCollection();
-    const now = new Date();
+    await dbConnect();
+    const member = await Team.create({ name, role, bio, image, order });
 
-    const { insertedId } = await collection.insertOne({
-      ...validation.data,
-      createdAt: now,
-      updatedAt: now,
-    });
-
-    const member = await collection.findOne({ _id: insertedId });
-
-    if (!member) {
-      return Response.json(
-        { error: "Failed to create team member" },
-        { status: 500 }
-      );
-    }
-
-    return Response.json(
-      { member: serializeTeam(member) },
-      { status: 201 }
-    );
+    return successResponse(member.toJSON(), undefined, 201);
   } catch (error) {
-    console.error("POST /api/team error:", error);
-    return Response.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    console.error('POST /api/team error:', error);
+    return errorResponse('Internal server error', 500);
   }
 }

@@ -1,13 +1,10 @@
-import { getCurrentAdmin } from "@/lib/adminAuth";
+import { getCurrentAdmin } from '@/lib/adminAuth';
+import { successResponse, errorResponse } from '@/lib/response';
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
   const admin = await getCurrentAdmin();
-
-  if (!admin) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  return Response.json({ admin });
+  if (!admin) return errorResponse('Unauthorized', 401);
+  return successResponse(admin);
 }

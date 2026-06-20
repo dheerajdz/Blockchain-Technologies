@@ -1,147 +1,89 @@
-import { NextRequest } from 'next/server';
 import dbConnect from '@/lib/db';
-import { rateLimit } from '@/lib/rateLimit';
-import { logRequest, createRequestTimer } from '@/lib/logger';
-import { successResponse, errorResponse, validationResponse, notFoundResponse, handleApiError } from '@/lib/response';
-import Blog, { BlogZodSchema } from '@/models/Blog';
+import Blog from '@/models/Blog';
+import { getCurrentAdmin } from '@/lib/adminAuth';
+import { successResponse, errorResponse } from '@/lib/response';
 import mongoose from 'mongoose';
 
-interface RouteParams {
-  params: Promise<{ id: string }>;
-}
+export const dynamic = 'force-dynamic';
 
-export async function GET(request: NextRequest, { params }: RouteParams) {
-  const startTime = createRequestTimer();
-  let statusCode = 200;
-
+export async function GET(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    const rateLimitResult = await rateLimit(request);
-    if (rateLimitResult) {
-      statusCode = 429;
-      logRequest(request, statusCode, startTime);
-      return rateLimitResult;
-    }
+    const { id } = await params;
+    if (!mongoose.Types.ObjectId.isValid(id)) return errorResponse('Invalid id', 400);
 
     await dbConnect();
-    const { id } = await params;
-
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      statusCode = 400;
-      logRequest(request, statusCode, startTime);
-      return errorResponse('Invalid blog ID format', 400);
-    }
-
     const blog = await Blog.findOne({ _id: id, isDeleted: false }).lean();
+    if (!blog) return errorResponse('Blog not found', 404);
 
-    if (!blog) {
-      statusCode = 404;
-      logRequest(request, statusCode, startTime);
-      return notFoundResponse('Blog');
-    }
-
-    logRequest(request, statusCode, startTime);
     return successResponse(blog);
   } catch (error) {
-    statusCode = 500;
-    logRequest(request, statusCode, startTime);
-    return handleApiError(error);
+    console.error('GET /api/blogs/[id] error:', error);
+    return errorResponse('Internal server error', 500);
   }
 }
 
-export async function PUT(request: NextRequest, { params }: RouteParams) {
-  const startTime = createRequestTimer();
-  let statusCode = 200;
-
+export async function PUT(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    const rateLimitResult = await rateLimit(request);
-    if (rateLimitResult) {
-      statusCode = 429;
-      logRequest(request, statusCode, startTime);
-      return rateLimitResult;
-    }
+    const admin = await getCurrentAdmin();
+    if (!admin) return errorResponse('Unauthorized', 401);
 
-    await dbConnect();
     const { id } = await params;
-
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      statusCode = 400;
-      logRequest(request, statusCode, startTime);
-      return errorResponse('Invalid blog ID format', 400);
-    }
+    if (!mongoose.Types.ObjectId.isValid(id)) return errorResponse('Invalid id', 400);
 
     const body = await request.json();
-    const validation = BlogZodSchema.partial().safeParse(body);
+    const { title, category, content, author } = body || {};
 
-    if (!validation.success) {
-      statusCode = 400;
-      const errors = validation.error.flatten().fieldErrors;
-      const formattedErrors: Record<string, string[]> = {};
-      for (const [key, value] of Object.entries(errors)) {
-        if (value) formattedErrors[key] = value;
-      }
-      logRequest(request, statusCode, startTime);
-      return validationResponse(formattedErrors);
-    }
+    if (!title || typeof title !== 'string') return errorResponse('title is required', 400);
+    if (!category || typeof category !== 'string') return errorResponse('category is required', 400);
+    if (!content || typeof content !== 'string') return errorResponse('content is required', 400);
+    if (!author || typeof author !== 'string') return errorResponse('author is required', 400);
 
-    const blog = await Blog.findOneAndUpdate(
-      { _id: id, isDeleted: false },
-      { $set: validation.data },
+    await dbConnect();
+    const blog = await Blog.findByIdAndUpdate(
+      id,
+      { title, category, content, author },
       { new: true, runValidators: true }
-    ).lean();
+    );
 
-    if (!blog) {
-      statusCode = 404;
-      logRequest(request, statusCode, startTime);
-      return notFoundResponse('Blog');
-    }
+    if (!blog) return errorResponse('Blog not found', 404);
 
-    logRequest(request, statusCode, startTime);
-    return successResponse(blog, 'Blog updated successfully');
-  } catch (error) {
-    statusCode = 500;
-    logRequest(request, statusCode, startTime);
-    return handleApiError(error);
+    return successResponse(blog.toJSON());
+  } catch (error: unknown) {
+    if ((error as Record<string, unknown>)?.code === 11000) return errorResponse('A blog with this title already exists', 409);
+    console.error('PUT /api/blogs/[id] error:', error);
+    return errorResponse('Internal server error', 500);
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: RouteParams) {
-  const startTime = createRequestTimer();
-  let statusCode = 200;
-
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    const rateLimitResult = await rateLimit(request);
-    if (rateLimitResult) {
-      statusCode = 429;
-      logRequest(request, statusCode, startTime);
-      return rateLimitResult;
-    }
+    const admin = await getCurrentAdmin();
+    if (!admin) return errorResponse('Unauthorized', 401);
+
+    const { id } = await params;
+    if (!mongoose.Types.ObjectId.isValid(id)) return errorResponse('Invalid id', 400);
 
     await dbConnect();
-    const { id } = await params;
-
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      statusCode = 400;
-      logRequest(request, statusCode, startTime);
-      return errorResponse('Invalid blog ID format', 400);
-    }
-
-    const blog = await Blog.findOneAndUpdate(
-      { _id: id, isDeleted: false },
-      { $set: { isDeleted: true, deletedAt: new Date() } },
+    const blog = await Blog.findByIdAndUpdate(
+      id,
+      { isDeleted: true, deletedAt: new Date() },
       { new: true }
-    ).lean();
+    );
 
-    if (!blog) {
-      statusCode = 404;
-      logRequest(request, statusCode, startTime);
-      return notFoundResponse('Blog');
-    }
+    if (!blog) return errorResponse('Blog not found', 404);
 
-    logRequest(request, statusCode, startTime);
-    return successResponse(null, 'Blog deleted successfully');
+    return successResponse({ message: 'Blog deleted successfully' });
   } catch (error) {
-    statusCode = 500;
-    logRequest(request, statusCode, startTime);
-    return handleApiError(error);
+    console.error('DELETE /api/blogs/[id] error:', error);
+    return errorResponse('Internal server error', 500);
   }
 }

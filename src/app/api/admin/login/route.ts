@@ -1,66 +1,43 @@
-import { cookies } from "next/headers";
-import bcrypt from "bcryptjs";
-import { getAdminsCollection, serializeAdmin } from "@/models/admin";
-import { signAdminToken } from "@/lib/jwt";
-import { ADMIN_TOKEN_COOKIE } from "@/lib/adminAuth";
+import dbConnect from '@/lib/db';
+import Admin from '@/models/admin';
+import bcrypt from 'bcryptjs';
+import { signAdminToken } from '@/lib/jwt';
+import { ADMIN_TOKEN_COOKIE } from '@/lib/adminAuth';
+import { successResponse, errorResponse } from '@/lib/response';
+import { cookies } from 'next/headers';
 
-export const dynamic = "force-dynamic";
-
-const ONE_WEEK_IN_SECONDS = 60 * 60 * 24 * 7;
+export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request) {
   try {
-    const body = (await request.json()) as Record<string, unknown>;
-    const email = body.email;
-    const password = body.password;
+    const body = await request.json();
+    const { email, password } = body || {};
 
-    if (
-      typeof email !== "string" ||
-      typeof password !== "string" ||
-      email.trim().length === 0 ||
-      password.length === 0
-    ) {
-      return Response.json(
-        { error: "Email and password are required" },
-        { status: 400 }
-      );
+    if (!email || typeof email !== 'string' || !password || typeof password !== 'string') {
+      return errorResponse('Email and password are required', 400);
     }
 
-    const normalizedEmail = email.trim().toLowerCase();
+    await dbConnect();
+    const admin = await Admin.findOne({ email: email.toLowerCase().trim() });
 
-    const admins = await getAdminsCollection();
-    const admin = await admins.findOne({ email: normalizedEmail });
-
-    if (!admin) {
-      return Response.json({ error: "Invalid credentials" }, { status: 401 });
-    }
+    if (!admin) return errorResponse('Invalid credentials', 401);
 
     const isValid = await bcrypt.compare(password, admin.passwordHash);
+    if (!isValid) return errorResponse('Invalid credentials', 401);
 
-    if (!isValid) {
-      return Response.json({ error: "Invalid credentials" }, { status: 401 });
-    }
-
-    const token = signAdminToken(admin._id.toHexString());
-
+    const token = signAdminToken(admin._id.toString());
     const cookieStore = await cookies();
     cookieStore.set(ADMIN_TOKEN_COOKIE, token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
-      maxAge: ONE_WEEK_IN_SECONDS,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 60 * 60 * 24 * 7,
     });
 
-    return Response.json({
-      success: true,
-      admin: serializeAdmin(admin),
-    });
+    return successResponse(admin.toJSON());
   } catch (error) {
-    console.error("Admin login error:", error);
-    return Response.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    console.error('Login error:', error);
+    return errorResponse('Internal server error', 500);
   }
 }

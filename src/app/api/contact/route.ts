@@ -1,45 +1,24 @@
-import {
-  getContactsCollection,
-  serializeContact,
-  validateContactInput,
-} from "@/models/contact";
+import dbConnect from '@/lib/db';
+import Contact from '@/models/contact';
+import { successResponse, errorResponse } from '@/lib/response';
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request) {
   try {
-    const body = (await request.json()) as Record<string, unknown>;
-    const validation = validateContactInput(body);
+    const body = await request.json();
+    const { name, email, message } = body || {};
 
-    if (!validation.valid) {
-      return Response.json({ error: validation.error }, { status: 400 });
-    }
+    if (!name || typeof name !== 'string') return errorResponse('name is required', 400);
+    if (!email || typeof email !== 'string') return errorResponse('email is required', 400);
+    if (!message || typeof message !== 'string') return errorResponse('message is required', 400);
 
-    const collection = await getContactsCollection();
+    await dbConnect();
+    const contact = await Contact.create({ name, email, message });
 
-    const { insertedId } = await collection.insertOne({
-      ...validation.data,
-      createdAt: new Date(),
-    });
-
-    const contact = await collection.findOne({ _id: insertedId });
-
-    if (!contact) {
-      return Response.json(
-        { error: "Failed to submit contact form" },
-        { status: 500 }
-      );
-    }
-
-    return Response.json(
-      { contact: serializeContact(contact) },
-      { status: 201 }
-    );
+    return successResponse(contact.toJSON(), undefined, 201);
   } catch (error) {
-    console.error("POST /api/contact error:", error);
-    return Response.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    console.error('POST /api/contact error:', error);
+    return errorResponse('Internal server error', 500);
   }
 }

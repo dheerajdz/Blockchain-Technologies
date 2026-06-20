@@ -1,108 +1,43 @@
-import { NextRequest } from 'next/server';
 import dbConnect from '@/lib/db';
-import { rateLimit } from '@/lib/rateLimit';
-import { logRequest, createRequestTimer } from '@/lib/logger';
-import { successResponse, errorResponse, validationResponse, notFoundResponse, handleApiError } from '@/lib/response';
-import Blog, { BlogZodSchema } from '@/models/Blog';
+import Blog from '@/models/Blog';
+import { getCurrentAdmin } from '@/lib/adminAuth';
+import { successResponse, errorResponse } from '@/lib/response';
 
-export async function GET(request: NextRequest) {
-  const startTime = createRequestTimer();
-  let statusCode = 200;
+export const dynamic = 'force-dynamic';
 
+export async function GET() {
   try {
-    const rateLimitResult = await rateLimit(request);
-    if (rateLimitResult) {
-      statusCode = 429;
-      logRequest(request, statusCode, startTime);
-      return rateLimitResult;
-    }
-
     await dbConnect();
-
-    const { searchParams } = new URL(request.url);
-    const category = searchParams.get('category');
-    const limit = parseInt(searchParams.get('limit') || '100', 10);
-    const page = parseInt(searchParams.get('page') || '1', 10);
-    const search = searchParams.get('search');
-    const includeDeleted = searchParams.get('includeDeleted') === 'true';
-
-    const query: Record<string, unknown> = {};
-
-    if (!includeDeleted) {
-      query.isDeleted = false;
-    }
-
-    if (category) {
-      query.category = category;
-    }
-
-    if (search) {
-      query.$text = { $search: search };
-    }
-
-    const skip = (page - 1) * limit;
-
-    const [blogs, total] = await Promise.all([
-      Blog.find(query)
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit)
-        .lean(),
-      Blog.countDocuments(query),
-    ]);
-
-    logRequest(request, statusCode, startTime);
-    return successResponse({
-      blogs,
-      pagination: {
-        total,
-        page,
-        limit,
-        pages: Math.ceil(total / limit),
-      },
-    });
+    const blogs = await Blog.find({ isDeleted: false })
+      .sort({ createdAt: -1 })
+      .lean();
+    return successResponse(blogs);
   } catch (error) {
-    statusCode = 500;
-    logRequest(request, statusCode, startTime);
-    return handleApiError(error);
+    console.error('GET /api/blogs error:', error);
+    return errorResponse('Internal server error', 500);
   }
 }
 
-export async function POST(request: NextRequest) {
-  const startTime = createRequestTimer();
-  let statusCode = 201;
-
+export async function POST(request: Request) {
   try {
-    const rateLimitResult = await rateLimit(request);
-    if (rateLimitResult) {
-      statusCode = 429;
-      logRequest(request, statusCode, startTime);
-      return rateLimitResult;
-    }
-
-    await dbConnect();
+    const admin = await getCurrentAdmin();
+    if (!admin) return errorResponse('Unauthorized', 401);
 
     const body = await request.json();
-    const validation = BlogZodSchema.safeParse(body);
+    const { title, category, content, author } = body || {};
 
-    if (!validation.success) {
-      statusCode = 400;
-      const errors = validation.error.flatten().fieldErrors;
-      const formattedErrors: Record<string, string[]> = {};
-      for (const [key, value] of Object.entries(errors)) {
-        if (value) formattedErrors[key] = value;
-      }
-      logRequest(request, statusCode, startTime);
-      return validationResponse(formattedErrors);
-    }
+    if (!title || typeof title !== 'string') return errorResponse('title is required', 400);
+    if (!category || typeof category !== 'string') return errorResponse('category is required', 400);
+    if (!content || typeof content !== 'string') return errorResponse('content is required', 400);
+    if (!author || typeof author !== 'string') return errorResponse('author is required', 400);
 
-    const blog = await Blog.create(validation.data);
+    await dbConnect();
+    const blog = await Blog.create({ title, category, content, author });
 
-    logRequest(request, statusCode, startTime);
-    return successResponse(blog, 'Blog created successfully', 201);
-  } catch (error) {
-    statusCode = 500;
-    logRequest(request, statusCode, startTime);
-    return handleApiError(error);
+    return successResponse(blog.toJSON(), undefined, 201);
+  } catch (error: unknown) {
+    if ((error as Record<string, unknown>)?.code === 11000) return errorResponse('A blog with this title already exists', 409);
+    console.error('POST /api/blogs error:', error);
+    return errorResponse('Internal server error', 500);
   }
 }

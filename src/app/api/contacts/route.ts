@@ -1,10 +1,22 @@
-import { NextRequest } from 'next/server';
-import { successResponse } from '@/lib/response';
+import dbConnect from '@/lib/db';
+import Contact from '@/models/contact';
+import { getCurrentAdmin } from '@/lib/adminAuth';
+import { successResponse, errorResponse } from '@/lib/response';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
-  return successResponse({ message: 'Contacts API - placeholder' });
-}
+  try {
+    const admin = await getCurrentAdmin();
+    if (!admin) return errorResponse('Unauthorized', 401);
 
-export async function POST(request: NextRequest) {
-  return successResponse({ message: 'Contacts API - placeholder' });
+    await dbConnect();
+    const contacts = await Contact.find({ isDeleted: false })
+      .sort({ createdAt: -1 })
+      .lean();
+    return successResponse(contacts);
+  } catch (error) {
+    console.error('GET /api/contacts error:', error);
+    return errorResponse('Internal server error', 500);
+  }
 }

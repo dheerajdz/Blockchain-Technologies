@@ -1,70 +1,66 @@
-import { type Collection, type WithId } from "mongodb";
-import { getDb } from "@/lib/db";
+import mongoose, { Schema, Document, Model } from 'mongoose';
 
-export interface ProjectDoc {
+export interface IProject extends Document {
   title: string;
   slug: string;
   description?: string;
   image?: string;
   link?: string;
+  isDeleted: boolean;
+  deletedAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
 }
 
-export type ProjectDocument = WithId<ProjectDoc>;
-
-export interface ProjectResponse {
-  _id: string;
-  title: string;
-  slug: string;
-  description?: string;
-  image?: string;
-  link?: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export async function getProjectsCollection(): Promise<Collection<ProjectDoc>> {
-  const db = await getDb();
-  return db.collection<ProjectDoc>("projects");
-}
-
-export function serializeProject(project: ProjectDocument): ProjectResponse {
-  return {
-    _id: project._id.toHexString(),
-    title: project.title,
-    slug: project.slug,
-    description: project.description,
-    image: project.image,
-    link: project.link,
-    createdAt: project.createdAt.toISOString(),
-    updatedAt: project.updatedAt.toISOString(),
-  };
-}
-
-export function validateProjectInput(
-  input: Record<string, unknown>
-): { valid: true; data: Omit<ProjectDoc, "createdAt" | "updatedAt"> } | { valid: false; error: string } {
-  const title = input.title;
-  const slug = input.slug;
-
-  if (typeof title !== "string" || title.trim().length === 0) {
-    return { valid: false, error: "title is required" };
-  }
-
-  if (typeof slug !== "string" || slug.trim().length === 0) {
-    return { valid: false, error: "slug is required" };
-  }
-
-  return {
-    valid: true,
-    data: {
-      title: title.trim(),
-      slug: slug.trim(),
-      description:
-        typeof input.description === "string" ? input.description.trim() : undefined,
-      image: typeof input.image === "string" ? input.image.trim() : undefined,
-      link: typeof input.link === "string" ? input.link.trim() : undefined,
+const ProjectSchema = new Schema<IProject>(
+  {
+    title: {
+      type: String,
+      required: [true, 'Title is required'],
+      trim: true,
     },
-  };
-}
+    slug: {
+      type: String,
+      required: [true, 'Slug is required'],
+      unique: true,
+      trim: true,
+    },
+    description: {
+      type: String,
+      trim: true,
+    },
+    image: {
+      type: String,
+      trim: true,
+    },
+    link: {
+      type: String,
+      trim: true,
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
+  },
+  {
+    timestamps: true,
+    toJSON: {
+      transform(_doc, ret: Record<string, unknown>) {
+        ret.id = (ret._id as mongoose.Types.ObjectId).toString();
+        delete ret._id;
+        delete ret.__v;
+      },
+    },
+  }
+);
+
+ProjectSchema.index({ isDeleted: 1, createdAt: -1 });
+
+const Project: Model<IProject> = mongoose.models.Project || mongoose.model<IProject>('Project', ProjectSchema);
+
+export default Project;

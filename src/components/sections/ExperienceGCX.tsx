@@ -85,14 +85,14 @@ export default function ExperienceGCX() {
 
                   {/* Code Snippet */}
                   <div className="bg-black/50 rounded-lg p-4 font-mono text-xs">
-                    <div className="text-white/40">// Fastify + Next.js</div>
+                    <div className="text-white/40">{/* Fastify + Next.js */}</div>
                     <div className="text-[#00D4AA]">const</div>
                     <div className="text-white"> response = </div>
                     <div className="text-[#0066FF]">await</div>
                     <div className="text-white"> api.</div>
                     <div className="text-yellow-400">get</div>
                     <div className="text-white">(</div>
-                    <div className="text-green-400">'/blocks'</div>
+                    <div className="text-green-400">&apos;/blocks&apos;</div>
                     <div className="text-white">);</div>
                   </div>
                 </div>

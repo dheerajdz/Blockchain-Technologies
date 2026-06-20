@@ -1,31 +1,30 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
 
-export interface IProject extends Document {
-  title: string;
-  slug: string;
-  description?: string;
+export interface ITeam extends Document {
+  name: string;
+  role: string;
+  bio?: string;
   image?: string;
-  link?: string;
+  order?: number;
   isDeleted: boolean;
   deletedAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
 }
 
-const ProjectSchema = new Schema<IProject>(
+const TeamSchema = new Schema<ITeam>(
   {
-    title: {
+    name: {
       type: String,
-      required: [true, 'Title is required'],
+      required: [true, 'Name is required'],
       trim: true,
     },
-    slug: {
+    role: {
       type: String,
-      required: [true, 'Slug is required'],
-      unique: true,
+      required: [true, 'Role is required'],
       trim: true,
     },
-    description: {
+    bio: {
       type: String,
       trim: true,
     },
@@ -33,9 +32,9 @@ const ProjectSchema = new Schema<IProject>(
       type: String,
       trim: true,
     },
-    link: {
-      type: String,
-      trim: true,
+    order: {
+      type: Number,
+      default: 0,
     },
     isDeleted: {
       type: Boolean,
@@ -59,8 +58,8 @@ const ProjectSchema = new Schema<IProject>(
   }
 );
 
-ProjectSchema.index({ isDeleted: 1, createdAt: -1 });
+TeamSchema.index({ isDeleted: 1, order: 1 });
 
-const Project: Model<IProject> = mongoose.models.Project || mongoose.model<IProject>('Project', ProjectSchema);
+const Team: Model<ITeam> = mongoose.models.Team || mongoose.model<ITeam>('Team', TeamSchema);
 
-export default Project;
+export default Team;

@@ -1,40 +1,31 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
 
-export interface IProject extends Document {
-  title: string;
-  slug: string;
-  description?: string;
-  image?: string;
-  link?: string;
+export interface IContact extends Document {
+  name: string;
+  email: string;
+  message: string;
   isDeleted: boolean;
   deletedAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
 }
 
-const ProjectSchema = new Schema<IProject>(
+const ContactSchema = new Schema<IContact>(
   {
-    title: {
+    name: {
       type: String,
-      required: [true, 'Title is required'],
+      required: [true, 'Name is required'],
       trim: true,
     },
-    slug: {
+    email: {
       type: String,
-      required: [true, 'Slug is required'],
-      unique: true,
+      required: [true, 'Email is required'],
+      lowercase: true,
       trim: true,
     },
-    description: {
+    message: {
       type: String,
-      trim: true,
-    },
-    image: {
-      type: String,
-      trim: true,
-    },
-    link: {
-      type: String,
+      required: [true, 'Message is required'],
       trim: true,
     },
     isDeleted: {
@@ -59,8 +50,8 @@ const ProjectSchema = new Schema<IProject>(
   }
 );
 
-ProjectSchema.index({ isDeleted: 1, createdAt: -1 });
+ContactSchema.index({ isDeleted: 1, createdAt: -1 });
 
-const Project: Model<IProject> = mongoose.models.Project || mongoose.model<IProject>('Project', ProjectSchema);
+const Contact: Model<IContact> = mongoose.models.Contact || mongoose.model<IContact>('Contact', ContactSchema);
 
-export default Project;
+export default Contact;

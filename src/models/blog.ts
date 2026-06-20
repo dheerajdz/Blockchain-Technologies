@@ -1,17 +1,10 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
-import { z } from 'zod';
 
-export const BlogZodSchema = z.object({
-  title: z.string().min(1, 'Title is required').max(200, 'Title must be less than 200 characters'),
-  category: z.string().min(1, 'Category is required').max(100, 'Category must be less than 100 characters'),
-  content: z.string().min(1, 'Content is required').max(50000, 'Content must be less than 50000 characters'),
-  author: z.string().min(1, 'Author is required').max(100, 'Author must be less than 100 characters'),
-});
-
-export type BlogInput = z.infer<typeof BlogZodSchema>;
-
-export interface IBlog extends Document, BlogInput {
-  id: string;
+export interface IBlog extends Document {
+  title: string;
+  category: string;
+  content: string;
+  author: string;
   isDeleted: boolean;
   deletedAt: Date | null;
   createdAt: Date;
@@ -58,21 +51,10 @@ const BlogSchema = new Schema<IBlog>(
   {
     timestamps: true,
     toJSON: {
-      virtuals: true,
-      transform: function (_doc, ret: Record<string, unknown>) {
+      transform(_doc, ret: Record<string, unknown>) {
         ret.id = (ret._id as mongoose.Types.ObjectId).toString();
         delete ret._id;
         delete ret.__v;
-        return ret;
-      },
-    },
-    toObject: {
-      virtuals: true,
-      transform: function (_doc, ret: Record<string, unknown>) {
-        ret.id = (ret._id as mongoose.Types.ObjectId).toString();
-        delete ret._id;
-        delete ret.__v;
-        return ret;
       },
     },
   }

@@ -7,15 +7,13 @@ interface Stat {
   value: number;
   suffix: string;
   label: string;
-  x: string;
-  y: string;
 }
 
 const stats: Stat[] = [
-  { value: 50, suffix: '+', label: 'Projects', x: '10%', y: '20%' },
-  { value: 30, suffix: '+', label: 'Clients', x: '35%', y: '60%' },
-  { value: 15, suffix: '+', label: 'Technologies', x: '65%', y: '30%' },
-  { value: 6, suffix: '', label: 'Years', x: '90%', y: '70%' },
+  { value: 50, suffix: '+', label: 'Projects' },
+  { value: 30, suffix: '+', label: 'Clients' },
+  { value: 15, suffix: '+', label: 'Technologies' },
+  { value: 6, suffix: '', label: 'Years' },
 ];
 
 function AnimatedCounter({ value, suffix }: { value: number; suffix: string }) {
@@ -92,11 +90,11 @@ export default function HeroSection() {
       {/* Animated Background Grid */}
       <div className="absolute inset-0 grid-pattern opacity-30" />
 
-      {/* Floating 3D Orbs - CSS Based */}
+      {/* Floating 3D Orbs - CSS Based with Navy Blue */}
       {!reducedMotion && (
         <>
           <motion.div
-            className="absolute top-[15%] left-[10%] w-64 h-64 bg-[#2DD4BF]/8 rounded-full blur-[100px]"
+            className="absolute top-[15%] left-[10%] w-64 h-64 bg-[#4C6FC2]/8 rounded-full blur-[100px]"
             animate={{
               x: [0, 40, 0],
               y: [0, -30, 0],
@@ -106,7 +104,7 @@ export default function HeroSection() {
             style={{ x: orbX, y: orbY }}
           />
           <motion.div
-            className="absolute top-[25%] right-[15%] w-48 h-48 bg-[#0D9488]/10 rounded-full blur-[80px]"
+            className="absolute top-[25%] right-[15%] w-48 h-48 bg-[#2A468B]/10 rounded-full blur-[80px]"
             animate={{
               x: [0, -30, 0],
               y: [0, 40, 0],
@@ -115,7 +113,7 @@ export default function HeroSection() {
             transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
           />
           <motion.div
-            className="absolute bottom-[30%] left-[30%] w-80 h-80 bg-[#064E3B]/15 rounded-full blur-[120px]"
+            className="absolute bottom-[30%] left-[30%] w-80 h-80 bg-[#1A2F5C]/15 rounded-full blur-[120px]"
             animate={{
               x: [0, 20, 0],
               y: [0, -20, 0],
@@ -126,19 +124,19 @@ export default function HeroSection() {
           
           {/* 3D-like Ring Elements */}
           <motion.div
-            className="absolute top-[20%] right-[20%] w-32 h-32 border-2 border-[#2DD4BF]/20 rounded-full"
+            className="absolute top-[20%] right-[20%] w-32 h-32 border-2 border-[#4C6FC2]/20 rounded-full"
             animate={{ rotate: 360 }}
             transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
             style={{ x: orbX, y: orbY }}
           />
           <motion.div
-            className="absolute top-[20%] right-[20%] w-32 h-32 border border-[#0D9488]/10 rounded-full"
+            className="absolute top-[20%] right-[20%] w-32 h-32 border border-[#2A468B]/10 rounded-full"
             animate={{ rotate: -360 }}
             transition={{ duration: 15, repeat: Infinity, ease: 'linear' }}
             style={{ x: orbX, y: orbY }}
           />
           <motion.div
-            className="absolute top-[15%] left-[15%] w-24 h-24 border border-[#2DD4BF]/15 rounded-full"
+            className="absolute top-[15%] left-[15%] w-24 h-24 border border-[#4C6FC2]/15 rounded-full"
             animate={{ rotate: 360, scale: [1, 1.1, 1] }}
             transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
           />
@@ -158,7 +156,7 @@ export default function HeroSection() {
               className="mb-6"
             >
               <span className="badge px-4 py-2 text-xs">
-                <span className="w-2 h-2 rounded-full bg-[#2DD4BF] animate-pulse mr-2 inline-block" />
+                <span className="w-2 h-2 rounded-full bg-[#4C6FC2] animate-pulse mr-2 inline-block" />
                 Experience the Future of Blockchain
               </span>
             </motion.div>
@@ -172,7 +170,7 @@ export default function HeroSection() {
               style={{ fontSize: 'clamp(48px, 6vw, 88px)', lineHeight: 1.05 }}
             >
               <span className="block text-white">BlocksScan</span>
-              <span className="block mt-2 bg-gradient-to-r from-white via-[#5EEAD4] to-[#2DD4BF] bg-clip-text text-transparent">
+              <span className="block mt-2 bg-gradient-to-r from-white via-[#5B7FC4] to-[#2A468B] bg-clip-text text-transparent">
                 Technologies
               </span>
             </motion.h1>
@@ -206,7 +204,7 @@ export default function HeroSection() {
             </motion.div>
           </div>
 
-          {/* Right: Floating Preview Card with Spline 3D */}
+          {/* Right: Floating Preview Card with 3D Visuals */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
@@ -219,7 +217,7 @@ export default function HeroSection() {
               className="relative w-[420px] h-[360px] rounded-2xl border border-white/10 bg-[#141414]/60 backdrop-blur-xl p-6 shadow-2xl overflow-hidden"
             >
               {/* Card Top Glow */}
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-[#2DD4BF]/40 to-transparent" />
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-[#4C6FC2]/40 to-transparent" />
 
               {/* 3D Visual Inside Card */}
               <div className="relative w-full h-full flex items-center justify-center">
@@ -227,30 +225,30 @@ export default function HeroSection() {
                   <>
                     {/* Rotating 3D-like Rings */}
                     <motion.div
-                      className="absolute w-40 h-40 border-2 border-[#2DD4BF]/30 rounded-full"
+                      className="absolute w-40 h-40 border-2 border-[#4C6FC2]/30 rounded-full"
                       animate={{ rotateX: 360, rotateY: 180 }}
                       transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
                       style={{ perspective: '1000px' }}
                     />
                     <motion.div
-                      className="absolute w-32 h-32 border border-[#0D9488]/20 rounded-full"
+                      className="absolute w-32 h-32 border border-[#2A468B]/20 rounded-full"
                       animate={{ rotateX: -360, rotateY: -180 }}
                       transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
                       style={{ perspective: '1000px' }}
                     />
                     <motion.div
-                      className="absolute w-24 h-24 bg-gradient-to-br from-[#2DD4BF]/20 to-[#064E3B]/30 rounded-2xl flex items-center justify-center"
+                      className="absolute w-24 h-24 bg-gradient-to-br from-[#4C6FC2]/20 to-[#1A2F5C]/30 rounded-2xl flex items-center justify-center"
                       animate={{ rotate: [0, 10, -10, 0], scale: [1, 1.05, 1] }}
                       transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
                     >
-                      <svg className="w-10 h-10 text-[#2DD4BF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-10 h-10 text-[#4C6FC2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
                       </svg>
                     </motion.div>
                   </>
                 ) : (
-                  <div className="w-32 h-32 rounded-2xl bg-gradient-to-br from-[#2DD4BF]/20 to-[#064E3B]/30 border border-[#2DD4BF]/20 flex items-center justify-center">
-                    <svg className="w-12 h-12 text-[#2DD4BF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-32 h-32 rounded-2xl bg-gradient-to-br from-[#4C6FC2]/20 to-[#1A2F5C]/30 border border-[#4C6FC2]/20 flex items-center justify-center">
+                    <svg className="w-12 h-12 text-[#4C6FC2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
                     </svg>
                   </div>
@@ -273,7 +271,7 @@ export default function HeroSection() {
             <motion.path
               d="M 50 120 Q 200 40, 350 80 T 650 60 T 950 100 T 1150 40"
               fill="none"
-              stroke="rgba(45, 212, 191, 0.4)"
+              stroke="rgba(42, 70, 139, 0.4)"
               strokeWidth="2"
               strokeDasharray="6 4"
               initial={{ pathLength: 0, opacity: 0 }}
@@ -284,7 +282,7 @@ export default function HeroSection() {
             <motion.path
               d="M 50 120 Q 200 40, 350 80 T 650 60 T 950 100 T 1150 40"
               fill="none"
-              stroke="rgba(45, 212, 191, 0.15)"
+              stroke="rgba(42, 70, 139, 0.15)"
               strokeWidth="8"
               filter="blur(8px)"
               initial={{ pathLength: 0, opacity: 0 }}
@@ -330,7 +328,7 @@ export default function HeroSection() {
           className="flex flex-col items-center gap-2 text-[#71717A]/50 font-body"
         >
           <span className="text-[10px] tracking-widest uppercase font-semibold">Scroll</span>
-          <svg className="w-5 h-5 text-[#2DD4BF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5 text-[#4C6FC2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
           </svg>
         </motion.div>

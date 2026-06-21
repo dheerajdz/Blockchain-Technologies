@@ -36,8 +36,8 @@ export default function Navbar() {
       >
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 shrink-0">
-          <div className="w-8 h-8 rounded-lg bg-[#2DD4BF] flex items-center justify-center">
-            <span className="text-[#0A0A0A] font-bold text-sm">B</span>
+          <div className="w-8 h-8 rounded-lg bg-[#2A468B] flex items-center justify-center">
+            <span className="text-white font-bold text-sm">B</span>
           </div>
           <span className="font-heading font-semibold text-white text-lg hidden sm:block">
             BlocksScan

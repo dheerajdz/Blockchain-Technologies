@@ -42,10 +42,10 @@ export default function AboutTeaser() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.1 }}
-            className="heading-1 mb-6 text-[#18181B]"
+            className="heading-1 heading-light mb-6"
           >
             Building the Future of{' '}
-            <span className="bg-gradient-to-r from-[#2A468B] to-[#4C6FC2] bg-clip-text text-transparent">
+            <span className="gradient-text">
               Decentralized Technology
             </span>
           </motion.h2>

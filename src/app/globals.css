@@ -113,6 +113,10 @@ h1, h2, h3, h4, h5, h6 {
 .heading-2  { font-size: clamp(22px, 3vw, 32px); font-weight: 600; }
 .heading-3  { font-size: 22px; font-weight: 500; }
 
+/* Light section headings — override dark theme default for white backgrounds */
+.heading-light { color: var(--color-text-dark) !important; }
+.heading-light .gradient-text { background: linear-gradient(to right, var(--color-accent-500), var(--color-accent-300)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
 .body-lg { font-size: 18px; line-height: 1.6; }
 .body-md { font-size: 16px; line-height: 1.6; }
 .body-sm { font-size: 14px; line-height: 1.5; }

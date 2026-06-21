@@ -36,7 +36,7 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <body
         className={`${roobert.variable} ${geistSans.variable} ${geistMono.variable} antialiased bg-[#0A0A0A] text-white`}
-        style={{ fontFamily: 'var(--font-roobert), var(--font-body), system-ui, sans-serif' }}
+        style={{ fontFamily: 'var(--font-primary), var(--font-body), system-ui, sans-serif' }}
       >
         {children}
       </body>

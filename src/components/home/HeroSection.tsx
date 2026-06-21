@@ -1,16 +1,7 @@
 'use client';
 
 import { motion, useMotionValue, useSpring, useTransform, useInView, animate } from 'motion/react';
-import { useEffect, useState, useRef, Suspense, lazy } from 'react';
-import dynamic from 'next/dynamic';
-
-// Lazy load Spline to avoid SSR issues
-const Spline = dynamic(() => import('@splinetool/react-spline'), {
-  ssr: false,
-  loading: () => (
-    <div className="w-full h-full bg-gradient-to-br from-[#2DD4BF]/10 to-[#064E3B]/20 rounded-2xl animate-pulse" />
-  ),
-});
+import { useEffect, useState, useRef } from 'react';
 
 interface Stat {
   value: number;
@@ -101,7 +92,7 @@ export default function HeroSection() {
       {/* Animated Background Grid */}
       <div className="absolute inset-0 grid-pattern opacity-30" />
 
-      {/* Floating 3D Orbs (CSS fallback for reduced motion or while Spline loads) */}
+      {/* Floating 3D Orbs - CSS Based */}
       {!reducedMotion && (
         <>
           <motion.div
@@ -132,19 +123,26 @@ export default function HeroSection() {
             }}
             transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
           />
+          
+          {/* 3D-like Ring Elements */}
+          <motion.div
+            className="absolute top-[20%] right-[20%] w-32 h-32 border-2 border-[#2DD4BF]/20 rounded-full"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+            style={{ x: orbX, y: orbY }}
+          />
+          <motion.div
+            className="absolute top-[20%] right-[20%] w-32 h-32 border border-[#0D9488]/10 rounded-full"
+            animate={{ rotate: -360 }}
+            transition={{ duration: 15, repeat: Infinity, ease: 'linear' }}
+            style={{ x: orbX, y: orbY }}
+          />
+          <motion.div
+            className="absolute top-[15%] left-[15%] w-24 h-24 border border-[#2DD4BF]/15 rounded-full"
+            animate={{ rotate: 360, scale: [1, 1.1, 1] }}
+            transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
+          />
         </>
-      )}
-
-      {/* Floating 3D Spline Objects (Background) */}
-      {!reducedMotion && (
-        <div className="absolute inset-0 pointer-events-none z-[1] opacity-60">
-          <Suspense fallback={null}>
-            <Spline
-              scene="https://prod.spline.design/abstract-floating-objects/scene.splinecode"
-              style={{ width: '100%', height: '100%' }}
-            />
-          </Suspense>
-        </div>
       )}
 
       {/* Content */}
@@ -223,17 +221,33 @@ export default function HeroSection() {
               {/* Card Top Glow */}
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-[#2DD4BF]/40 to-transparent" />
 
-              {/* Spline 3D Scene Inside Card */}
+              {/* 3D Visual Inside Card */}
               <div className="relative w-full h-full flex items-center justify-center">
                 {!reducedMotion ? (
-                  <Suspense fallback={
-                    <div className="w-48 h-48 bg-gradient-to-br from-[#2DD4BF]/20 to-[#064E3B]/30 rounded-xl animate-pulse" />
-                  }>
-                    <Spline
-                      scene="https://prod.spline.design/looping-ribbon-torus/scene.splinecode"
-                      style={{ width: '100%', height: '100%' }}
+                  <>
+                    {/* Rotating 3D-like Rings */}
+                    <motion.div
+                      className="absolute w-40 h-40 border-2 border-[#2DD4BF]/30 rounded-full"
+                      animate={{ rotateX: 360, rotateY: 180 }}
+                      transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
+                      style={{ perspective: '1000px' }}
                     />
-                  </Suspense>
+                    <motion.div
+                      className="absolute w-32 h-32 border border-[#0D9488]/20 rounded-full"
+                      animate={{ rotateX: -360, rotateY: -180 }}
+                      transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
+                      style={{ perspective: '1000px' }}
+                    />
+                    <motion.div
+                      className="absolute w-24 h-24 bg-gradient-to-br from-[#2DD4BF]/20 to-[#064E3B]/30 rounded-2xl flex items-center justify-center"
+                      animate={{ rotate: [0, 10, -10, 0], scale: [1, 1.05, 1] }}
+                      transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+                    >
+                      <svg className="w-10 h-10 text-[#2DD4BF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                      </svg>
+                    </motion.div>
+                  </>
                 ) : (
                   <div className="w-32 h-32 rounded-2xl bg-gradient-to-br from-[#2DD4BF]/20 to-[#064E3B]/30 border border-[#2DD4BF]/20 flex items-center justify-center">
                     <svg className="w-12 h-12 text-[#2DD4BF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">

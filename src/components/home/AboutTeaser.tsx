@@ -15,15 +15,15 @@ const techStack = [
 
 export default function AboutTeaser() {
   return (
-    <section id="about" className="relative section bg-[#FAFAFA] pt-32 pb-24">
-      {/* Gradient bleed from hero */}
+    <section id="about" className="relative section bg-white pt-32 pb-24">
+      {/* Gradient bleed from hero — matches hero gradient endpoint exactly */}
       <div 
-        className="absolute top-0 left-0 right-0 h-32 pointer-events-none"
+        className="absolute top-0 left-0 right-0 h-32 pointer-events-none z-0"
         style={{
-          background: 'linear-gradient(to bottom, #E8ECF7 0%, #FAFAFA 100%)',
+          background: 'linear-gradient(to bottom, #FFFFFF 0%, #FFFFFF 100%)',
         }}
       />
-      <div className="container">
+      <div className="container relative z-10">
         <div className="max-w-3xl mx-auto text-center">
           {/* Label */}
           <motion.span

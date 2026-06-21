@@ -60,14 +60,16 @@ body {
 .gradient-flow {
   background: 
     /* Smooth multi-stop blend from black → navy → white */
+    /* White region extended to 120% so gradient fully resolves before next section */
     linear-gradient(
       to bottom,
       #0A0A0A 0%,
       #0A0A0A 8%,
       #16234F 28%,
       #2A468B 42%,
-      #6E89C2 62%,
-      #E8ECF7 82%,
+      #6E89C2 58%,
+      #E8ECF7 75%,
+      #FFFFFF 92%,
       #FFFFFF 100%
     );
 }

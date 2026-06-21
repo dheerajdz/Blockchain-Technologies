@@ -143,7 +143,7 @@ function TimelineItem({ milestone, index }: { milestone: typeof milestones[0]; i
       </div>
 
       {/* Center Node */}
-      <div className="relative flex-shrink-0 w-4 h-4 rounded-full bg-accent-500 border-2 border-accent-300 z-10 shadow-[0_0_12px_rgba(42,70,139,0.5)]" />
+      <div className="relative flex-shrink-0 w-4 h-4 rounded-full bg-accent-500 border-2 border-accent-300 z-10" />
 
       {/* Spacer for alternating layout */}
       <div className="flex-1 hidden md:block" />

@@ -314,7 +314,7 @@ export default function CareersPage() {
                   onClick={() => setActiveDept(dept)}
                   className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                     activeDept === dept
-                      ? 'bg-accent-500 text-white shadow-[0_0_16px_rgba(42,70,139,0.3)]'
+                      ? 'bg-accent-500 text-white shadow-[0_4px_12px_rgba(0,0,0,0.25)]'
                       : 'bg-accent-500/10 text-accent-300 border border-accent-500/20 hover:bg-accent-500/20'
                   }`}
                 >
@@ -332,7 +332,7 @@ export default function CareersPage() {
                   onClick={() => setActiveType(type)}
                   className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                     activeType === type
-                      ? 'bg-accent-500 text-white shadow-[0_0_16px_rgba(42,70,139,0.3)]'
+                      ? 'bg-accent-500 text-white shadow-[0_4px_12px_rgba(0,0,0,0.25)]'
                       : 'bg-accent-500/10 text-accent-300 border border-accent-500/20 hover:bg-accent-500/20'
                   }`}
                 >

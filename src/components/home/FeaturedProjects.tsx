@@ -88,7 +88,7 @@ function ProjectCard({ project, index, featured = false }: { project: Project; i
       transition={{ duration: 0.6, delay: index * 0.1 }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className={`card-light overflow-hidden group cursor-pointer h-full flex flex-col ${
+      className={`card-light overflow-hidden group cursor-pointer ${
         featured ? 'md:col-span-2 md:row-span-2' : ''
       }`}
     >
@@ -132,8 +132,8 @@ function ProjectCard({ project, index, featured = false }: { project: Project; i
         )}
       </div>
 
-      {/* Content — flex column with anchored footer */}
-      <div className="p-5 flex flex-col flex-grow">
+      {/* Content */}
+      <div className="p-5">
         <h3 className={`font-semibold text-[#18181B] mb-2 ${featured ? 'text-xl' : 'text-lg'}`}>
           {project.title}
         </h3>
@@ -153,8 +153,8 @@ function ProjectCard({ project, index, featured = false }: { project: Project; i
           ))}
         </div>
 
-        {/* View Project link — anchored to bottom */}
-        <div className="mt-auto pt-3 border-t border-black/5">
+        {/* View Project link */}
+        <div className="pt-3 border-t border-black/5">
           <a
             href={project.link || '#'}
             className="inline-flex items-center gap-2 text-sm font-medium text-[#2A468B] hover:text-[#4C6FC2] transition-colors group/link"
@@ -227,7 +227,7 @@ export default function FeaturedProjects() {
         </div>
 
         {/* Bento Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           <ProjectCard project={featured} index={0} featured />
           {others.map((project, i) => (
             <ProjectCard key={project.id} project={project} index={i + 1} />

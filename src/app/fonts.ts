@@ -5,27 +5,27 @@ import localFont from 'next/font/local'
 export const roobert = localFont({
   src: [
     {
-      path: '../public/fonts/roobert/Roobert-Light.otf',
+      path: '../../public/fonts/roobert/Roobert-Light.otf',
       weight: '300',
       style: 'normal',
     },
     {
-      path: '../public/fonts/roobert/Roobert-Regular.otf',
+      path: '../../public/fonts/roobert/Roobert-Regular.otf',
       weight: '400',
       style: 'normal',
     },
     {
-      path: '../public/fonts/roobert/Roobert-Medium.otf',
+      path: '../../public/fonts/roobert/Roobert-Medium.otf',
       weight: '500',
       style: 'normal',
     },
     {
-      path: '../public/fonts/roobert/Roobert-Bold.otf',
+      path: '../../public/fonts/roobert/Roobert-Bold.otf',
       weight: '700',
       style: 'normal',
     },
     {
-      path: '../public/fonts/roobert/Roobert-Heavy.otf',
+      path: '../../public/fonts/roobert/Roobert-Heavy.otf',
       weight: '800',
       style: 'normal',
     },

@@ -27,8 +27,8 @@
   --color-positive: #2A468B;
   --color-negative: #EF4444;
 
-  --font-heading: var(--font-heading), system-ui, sans-serif;
-  --font-body: var(--font-body), system-ui, sans-serif;
+  --font-heading: var(--font-roobert), var(--font-body), system-ui, sans-serif;
+  --font-body: var(--font-roobert), var(--font-body), system-ui, sans-serif;
   --font-mono: var(--font-mono), monospace;
 
   --radius-sm: 8px;

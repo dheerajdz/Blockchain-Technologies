@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { roobert } from "./fonts";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -34,7 +35,8 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#0A0A0A] text-white`}
+        className={`${roobert.variable} ${geistSans.variable} ${geistMono.variable} antialiased bg-[#0A0A0A] text-white`}
+        style={{ fontFamily: 'var(--font-roobert), var(--font-body), system-ui, sans-serif' }}
       >
         {children}
       </body>

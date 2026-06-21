@@ -5,22 +5,27 @@ import Link from 'next/link';
 
 const footerLinks = {
   company: [
-    { label: 'About', href: '#about' },
-    { label: 'Team', href: '#team' },
-    { label: 'Careers', href: '#careers' },
-    { label: 'Blog', href: '#blog' },
+    { label: 'About', href: '/about' },
+    { label: 'Team', href: '/team' },
+    { label: 'Careers', href: '/careers' },
+    { label: 'Blog', href: '/blog' },
   ],
   services: [
-    { label: 'Smart Contracts', href: '#services' },
-    { label: 'DApp Development', href: '#services' },
-    { label: 'Web3 Solutions', href: '#services' },
-    { label: 'Consulting', href: '#services' },
+    { label: 'Smart Contracts', href: '/services/smart-contracts' },
+    { label: 'DApp Development', href: '/services/dapp-development' },
+    { label: 'Web3 Solutions', href: '/services/web3-solutions' },
+    { label: 'Consulting', href: '/services/consulting' },
   ],
   products: [
     { label: 'XDCScan', href: '#' },
     { label: 'OpenScan AI', href: '#' },
     { label: 'GCX Platform', href: '#' },
     { label: 'XDCGram', href: '#' },
+  ],
+  legal: [
+    { label: 'Privacy Policy', href: '/privacy' },
+    { label: 'Terms of Service', href: '/terms' },
+    { label: 'Admin', href: '/admin/login' },
   ],
 };
 
@@ -130,7 +135,7 @@ export default function Footer() {
           </motion.div>
 
           {/* Links Grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-12">
+          <div className="grid md:grid-cols-2 lg:grid-cols-6 gap-12">
             {/* Brand */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -221,6 +226,23 @@ export default function Footer() {
                 ))}
               </ul>
             </motion.div>
+
+            {/* Legal Links */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+            >
+              <h4 className="text-white font-semibold text-sm mb-5">Legal</h4>
+              <ul className="space-y-4">
+                {footerLinks.legal.map((link) => (
+                  <li key={link.label}>
+                    <FooterLink href={link.href}>{link.label}</FooterLink>
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
           </div>
 
           {/* Bottom Bar */}
@@ -229,10 +251,10 @@ export default function Footer() {
               © {new Date().getFullYear()} BlocksScan Technologies. All rights reserved.
             </p>
             <div className="flex gap-6">
-              <a href="#" className="text-[#A1A1AA] text-sm hover:text-[#5B7FC4] transition-colors">
+              <a href="/privacy" className="text-[#A1A1AA] text-sm hover:text-[#5B7FC4] transition-colors">
                 Privacy Policy
               </a>
-              <a href="#" className="text-[#A1A1AA] text-sm hover:text-[#5B7FC4] transition-colors">
+              <a href="/terms" className="text-[#A1A1AA] text-sm hover:text-[#5B7FC4] transition-colors">
                 Terms of Service
               </a>
             </div>

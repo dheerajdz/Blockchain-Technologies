@@ -9,7 +9,7 @@ export default function ContactCTA() {
       <motion.div
         className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full"
         style={{
-          background: 'radial-gradient(ellipse 60% 50% at 50% 100%, rgba(45, 212, 191, 0.12) 0%, rgba(13, 148, 136, 0.05) 40%, transparent 70%)',
+          background: 'radial-gradient(ellipse 60% 50% at 50% 100%, rgba(42, 70, 139, 0.12) 0%, rgba(61, 90, 158, 0.05) 40%, transparent 70%)',
         }}
         animate={{
           scale: [1, 1.05, 1],
@@ -26,7 +26,7 @@ export default function ContactCTA() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="label mb-4 inline-block"
+            className="label mb-4 inline-block text-[#4C6FC2]"
           >
             Get In Touch
           </motion.span>

@@ -59,13 +59,13 @@ function ServiceCard({ service, index }: { service: Service; index: number }) {
       <motion.div
         animate={hovered ? { scale: 1.1, rotate: 5 } : { scale: 1, rotate: 0 }}
         transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-        className="w-12 h-12 rounded-xl bg-[#2DD4BF]/10 border border-[#2DD4BF]/20 flex items-center justify-center text-2xl mb-5"
+        className="w-12 h-12 rounded-xl bg-[#2A468B]/10 border border-[#2A468B]/20 flex items-center justify-center text-2xl mb-5"
       >
         {service.icon}
       </motion.div>
 
       {/* Title */}
-      <h3 className="heading-3 text-white mb-3 group-hover:text-[#2DD4BF] transition-colors">
+      <h3 className="heading-3 text-white mb-3 group-hover:text-[#4C6FC2] transition-colors">
         {service.title}
       </h3>
 
@@ -80,7 +80,7 @@ function ServiceCard({ service, index }: { service: Service; index: number }) {
         animate={hovered ? { opacity: 1 } : { opacity: 0 }}
         transition={{ duration: 0.3 }}
         style={{
-          background: 'radial-gradient(400px circle at 50% 50%, rgba(45, 212, 191, 0.06), transparent 60%)',
+          background: 'radial-gradient(400px circle at 50% 50%, rgba(42, 70, 139, 0.06), transparent 60%)',
         }}
       />
     </motion.div>
@@ -98,7 +98,7 @@ export default function ServicesOverview() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="label mb-4 inline-block"
+            className="label mb-4 inline-block text-[#4C6FC2]"
           >
             Our Services
           </motion.span>

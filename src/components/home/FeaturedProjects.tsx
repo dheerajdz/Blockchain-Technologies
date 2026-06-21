@@ -68,7 +68,7 @@ function ProjectCard({ project, index, featured = false }: { project: Project; i
           transition={{ duration: 0.4 }}
           className="w-full h-full"
         >
-          <div className="w-full h-full bg-gradient-to-br from-[#0D9488]/20 to-[#064E3B]/30 flex items-center justify-center">
+          <div className="w-full h-full bg-gradient-to-br from-[#2A468B]/20 to-[#1A2F5C]/30 flex items-center justify-center">
             <span className="text-4xl">{project.title[0]}</span>
           </div>
         </motion.div>
@@ -95,7 +95,7 @@ function ProjectCard({ project, index, featured = false }: { project: Project; i
           {project.technologies.map((tech) => (
             <span
               key={tech}
-              className="px-2.5 py-1 rounded-full bg-[#2DD4BF]/10 text-[#0D9488] text-xs font-medium"
+              className="px-2.5 py-1 rounded-full bg-[#4C6FC2]/10 text-[#2A468B] text-xs font-medium"
             >
               {tech}
             </span>

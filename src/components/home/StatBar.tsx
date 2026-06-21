@@ -77,7 +77,7 @@ export default function StatBar() {
                 transition={{ duration: 0.6, delay: i * 0.1 }}
                 className="stat-item text-center"
               >
-                <p className="stat-number text-[#2DD4BF]">
+                <p className="stat-number text-[#4C6FC2]">
                   <AnimatedCounter value={stat.value} suffix={stat.suffix} />
                 </p>
                 <p className="text-[#A1A1AA] text-sm mt-2">{stat.label}</p>

@@ -65,14 +65,14 @@ function BlogCard({ blog, index }: { blog: Blog; index: number }) {
       >
         {/* Category Badge */}
         <div className="px-5 pt-5">
-          <span className="inline-block px-3 py-1 rounded-full bg-[#2DD4BF]/10 text-[#0D9488] text-xs font-medium">
+          <span className="inline-block px-3 py-1 rounded-full bg-[#4C6FC2]/10 text-[#2A468B] text-xs font-medium">
             {blog.category}
           </span>
         </div>
 
         {/* Content */}
         <div className="p-5 flex-1 flex flex-col">
-          <h3 className="font-semibold text-[#18181B] text-lg mb-3 group-hover:text-[#0D9488] transition-colors line-clamp-2">
+          <h3 className="font-semibold text-[#18181B] text-lg mb-3 group-hover:text-[#2A468B] transition-colors line-clamp-2">
             {blog.title}
           </h3>
           <p className="text-[#52525B] text-sm leading-relaxed mb-4 line-clamp-3 flex-1">

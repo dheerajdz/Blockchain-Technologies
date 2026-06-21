@@ -24,7 +24,7 @@ export default function AboutTeaser() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="label mb-4 inline-block text-[#0D9488]"
+            className="label mb-4 inline-block text-[#2A468B]"
           >
             About Us
           </motion.span>
@@ -38,7 +38,7 @@ export default function AboutTeaser() {
             className="heading-1 mb-6 text-[#18181B]"
           >
             Building the Future of{' '}
-            <span className="bg-gradient-to-r from-[#0D9488] to-[#2DD4BF] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[#2A468B] to-[#4C6FC2] bg-clip-text text-transparent">
               Decentralized Technology
             </span>
           </motion.h2>
@@ -75,7 +75,7 @@ export default function AboutTeaser() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: 0.4 + i * 0.05 }}
                   whileHover={{ y: -4, scale: 1.05 }}
-                  className="px-4 py-2 rounded-full bg-[#18181B]/5 border border-[#18181B]/10 text-[#52525B] text-sm hover:border-[#2DD4BF]/30 hover:text-[#0D9488] transition-colors cursor-default"
+                  className="px-4 py-2 rounded-full bg-[#18181B]/5 border border-[#18181B]/10 text-[#52525B] text-sm hover:border-[#4C6FC2]/30 hover:text-[#2A468B] transition-colors cursor-default"
                 >
                   {tech.name}
                 </motion.div>

@@ -54,6 +54,26 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* ─── CONTINUOUS GRADIENT FLOW ─── */
+.gradient-flow {
+  background: 
+    /* Top: near-black */
+    linear-gradient(
+      180deg,
+      #0A0A0A 0%,
+      #0A0A0A 15%,
+      /* Teal bloom from center-bottom */
+      #0D1117 35%,
+      #0D2B25 50%,
+      #0F4A3E 60%,
+      #1A6B5C 70%,
+      #2DD4BF 85%,
+      /* Transition to white */
+      #E6FFFA 95%,
+      #FAFAFA 100%
+    );
+}
+
 /* ─── HERO GLOW ─── */
 .hero-glow {
   background:

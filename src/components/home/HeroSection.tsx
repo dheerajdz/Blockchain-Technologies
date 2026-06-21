@@ -1,11 +1,60 @@
 'use client';
 
-import { motion, useMotionValue, useSpring, useTransform } from 'motion/react';
-import { useEffect, useState, useRef } from 'react';
+import { motion, useMotionValue, useSpring, useTransform, useInView, animate } from 'motion/react';
+import { useEffect, useState, useRef, Suspense, lazy } from 'react';
+import dynamic from 'next/dynamic';
+
+// Lazy load Spline to avoid SSR issues
+const Spline = dynamic(() => import('@splinetool/react-spline'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-full bg-gradient-to-br from-[#2DD4BF]/10 to-[#064E3B]/20 rounded-2xl animate-pulse" />
+  ),
+});
+
+interface Stat {
+  value: number;
+  suffix: string;
+  label: string;
+  x: string;
+  y: string;
+}
+
+const stats: Stat[] = [
+  { value: 50, suffix: '+', label: 'Projects', x: '10%', y: '20%' },
+  { value: 30, suffix: '+', label: 'Clients', x: '35%', y: '60%' },
+  { value: 15, suffix: '+', label: 'Technologies', x: '65%', y: '30%' },
+  { value: 6, suffix: '', label: 'Years', x: '90%', y: '70%' },
+];
+
+function AnimatedCounter({ value, suffix }: { value: number; suffix: string }) {
+  const [count, setCount] = useState(0);
+  const ref = useRef<HTMLSpanElement>(null);
+  const isInView = useInView(ref, { once: true, margin: '-50px' });
+
+  useEffect(() => {
+    if (isInView) {
+      const controls = animate(0, value, {
+        duration: 2,
+        ease: 'easeOut',
+        onUpdate: (latest) => setCount(Math.round(latest)),
+      });
+      return () => controls.stop();
+    }
+  }, [isInView, value]);
+
+  return (
+    <span ref={ref}>
+      {count}
+      {suffix}
+    </span>
+  );
+}
 
 export default function HeroSection() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const statsRef = useRef<HTMLDivElement>(null);
+  const statsInView = useInView(statsRef, { once: true, margin: '-100px' });
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -13,8 +62,8 @@ export default function HeroSection() {
   const springX = useSpring(mouseX, { stiffness: 100, damping: 20 });
   const springY = useSpring(mouseY, { stiffness: 100, damping: 20 });
 
-  const cardX = useTransform(springX, [-0.5, 0.5], [-20, 20]);
-  const cardY = useTransform(springY, [-0.5, 0.5], [-20, 20]);
+  const orbX = useTransform(springX, [-0.5, 0.5], [-30, 30]);
+  const orbY = useTransform(springY, [-0.5, 0.5], [-30, 30]);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -24,59 +73,83 @@ export default function HeroSection() {
       const y = (e.clientY - rect.top) / rect.height - 0.5;
       mouseX.set(x);
       mouseY.set(y);
-      setMousePosition({ x, y });
     };
 
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, [mouseX, mouseY]);
 
+  // Check for reduced motion preference
+  const [reducedMotion, setReducedMotion] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setReducedMotion(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+
   return (
     <section
       ref={containerRef}
       id="home"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden hero-glow"
+      className="relative min-h-screen overflow-hidden"
     >
+      {/* Continuous Gradient Background */}
+      <div className="absolute inset-0 gradient-flow" />
+
       {/* Animated Background Grid */}
-      <div className="absolute inset-0 grid-pattern opacity-40" />
+      <div className="absolute inset-0 grid-pattern opacity-30" />
 
-      {/* Teal Radial Glow - Breathing Animation */}
-      <motion.div
-        className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] rounded-full"
-        style={{
-          background: 'radial-gradient(ellipse 60% 50% at 50% 100%, rgba(45, 212, 191, 0.15) 0%, rgba(13, 148, 136, 0.08) 40%, transparent 70%)',
-        }}
-        animate={{
-          scale: [1, 1.05, 1],
-          opacity: [0.6, 1, 0.6],
-        }}
-        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-      />
+      {/* Floating 3D Orbs (CSS fallback for reduced motion or while Spline loads) */}
+      {!reducedMotion && (
+        <>
+          <motion.div
+            className="absolute top-[15%] left-[10%] w-64 h-64 bg-[#2DD4BF]/8 rounded-full blur-[100px]"
+            animate={{
+              x: [0, 40, 0],
+              y: [0, -30, 0],
+              scale: [1, 1.2, 1],
+            }}
+            transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+            style={{ x: orbX, y: orbY }}
+          />
+          <motion.div
+            className="absolute top-[25%] right-[15%] w-48 h-48 bg-[#0D9488]/10 rounded-full blur-[80px]"
+            animate={{
+              x: [0, -30, 0],
+              y: [0, 40, 0],
+              scale: [1, 1.3, 1],
+            }}
+            transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
+          />
+          <motion.div
+            className="absolute bottom-[30%] left-[30%] w-80 h-80 bg-[#064E3B]/15 rounded-full blur-[120px]"
+            animate={{
+              x: [0, 20, 0],
+              y: [0, -20, 0],
+              scale: [1, 1.1, 1],
+            }}
+            transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
+          />
+        </>
+      )}
 
-      {/* Floating Orbs */}
-      <motion.div
-        className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#2DD4BF]/10 rounded-full blur-[120px]"
-        animate={{
-          x: [0, 30, 0],
-          y: [0, -30, 0],
-          scale: [1, 1.1, 1],
-        }}
-        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-        style={{ x: cardX, y: cardY }}
-      />
-      <motion.div
-        className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#064E3B]/20 rounded-full blur-[120px]"
-        animate={{
-          x: [0, -20, 0],
-          y: [0, 20, 0],
-          scale: [1, 1.2, 1],
-        }}
-        transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
-      />
+      {/* Floating 3D Spline Objects (Background) */}
+      {!reducedMotion && (
+        <div className="absolute inset-0 pointer-events-none z-[1] opacity-60">
+          <Suspense fallback={null}>
+            <Spline
+              scene="https://prod.spline.design/abstract-floating-objects/scene.splinecode"
+              style={{ width: '100%', height: '100%' }}
+            />
+          </Suspense>
+        </div>
+      )}
 
       {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 pt-24 pb-12">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 pt-32 pb-20">
+        <div className="grid lg:grid-cols-2 gap-12 items-center min-h-[70vh]">
           {/* Left: Text Content */}
           <div className="text-center lg:text-left">
             {/* Badge */}
@@ -92,15 +165,18 @@ export default function HeroSection() {
               </span>
             </motion.div>
 
-            {/* Main Title */}
+            {/* Main Title - Two Tone */}
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="display-xl mb-6 tracking-tight font-heading"
+              className="font-heading font-bold mb-6 tracking-tight"
+              style={{ fontSize: 'clamp(48px, 6vw, 88px)', lineHeight: 1.05 }}
             >
               <span className="block text-white">BlocksScan</span>
-              <span className="block gradient-text mt-2">Technologies</span>
+              <span className="block mt-2 bg-gradient-to-r from-white via-[#5EEAD4] to-[#2DD4BF] bg-clip-text text-transparent">
+                Technologies
+              </span>
             </motion.h1>
 
             {/* Subtitle */}
@@ -132,7 +208,7 @@ export default function HeroSection() {
             </motion.div>
           </div>
 
-          {/* Right: Floating Preview Card */}
+          {/* Right: Floating Preview Card with Spline 3D */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
@@ -140,71 +216,111 @@ export default function HeroSection() {
             className="hidden lg:flex justify-center"
           >
             <motion.div
-              style={{ x: cardX, y: cardY }}
-              animate={{ y: [0, -15, 0] }}
+              animate={reducedMotion ? {} : { y: [0, -15, 0] }}
               transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-              className="relative w-[400px] h-[320px] rounded-2xl border border-white/10 bg-[#141414]/80 backdrop-blur-xl p-6 shadow-2xl overflow-hidden"
+              className="relative w-[420px] h-[360px] rounded-2xl border border-white/10 bg-[#141414]/60 backdrop-blur-xl p-6 shadow-2xl overflow-hidden"
             >
               {/* Card Top Glow */}
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-[#2DD4BF]/40 to-transparent" />
 
-              {/* Abstract 3D Visual Element */}
-              <div className="relative h-full flex flex-col items-center justify-center">
-                <motion.div
-                  className="w-32 h-32 rounded-2xl bg-gradient-to-br from-[#2DD4BF]/20 to-[#064E3B]/30 border border-[#2DD4BF]/20 flex items-center justify-center"
-                  animate={{ rotate: [0, 5, -5, 0] }}
-                  transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-                >
-                  <div className="w-20 h-20 rounded-xl bg-gradient-to-br from-[#2DD4BF]/30 to-[#0D9488]/20 flex items-center justify-center">
-                    <svg className="w-10 h-10 text-[#2DD4BF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              {/* Spline 3D Scene Inside Card */}
+              <div className="relative w-full h-full flex items-center justify-center">
+                {!reducedMotion ? (
+                  <Suspense fallback={
+                    <div className="w-48 h-48 bg-gradient-to-br from-[#2DD4BF]/20 to-[#064E3B]/30 rounded-xl animate-pulse" />
+                  }>
+                    <Spline
+                      scene="https://prod.spline.design/looping-ribbon-torus/scene.splinecode"
+                      style={{ width: '100%', height: '100%' }}
+                    />
+                  </Suspense>
+                ) : (
+                  <div className="w-32 h-32 rounded-2xl bg-gradient-to-br from-[#2DD4BF]/20 to-[#064E3B]/30 border border-[#2DD4BF]/20 flex items-center justify-center">
+                    <svg className="w-12 h-12 text-[#2DD4BF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
                     </svg>
                   </div>
-                </motion.div>
-
-                <div className="mt-6 text-center">
-                  <p className="text-white font-semibold text-sm">Blockchain Explorer</p>
-                  <p className="text-[#71717A] text-xs mt-1">Real-time network insights</p>
-                </div>
-
-                {/* Mini Stats */}
-                <div className="flex gap-4 mt-4">
-                  <div className="text-center">
-                    <p className="text-[#2DD4BF] font-mono text-sm font-semibold">2.4M</p>
-                    <p className="text-[#71717A] text-[10px]">Transactions</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-[#2DD4BF] font-mono text-sm font-semibold">99.9%</p>
-                    <p className="text-[#71717A] text-[10px]">Uptime</p>
-                  </div>
-                </div>
+                )}
               </div>
             </motion.div>
           </motion.div>
         </div>
-
-        {/* Scroll Indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.2 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2"
-        >
-          <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
-            className="flex flex-col items-center gap-2 text-[#71717A]/50 font-body"
-          >
-            <span className="text-[10px] tracking-widest uppercase font-semibold">Scroll</span>
-            <svg className="w-5 h-5 text-[#2DD4BF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-            </svg>
-          </motion.div>
-        </motion.div>
       </div>
 
-      {/* Bottom Gradient Fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#0A0A0A] to-transparent pointer-events-none" />
+      {/* Stats Section - Woven into Gradient */}
+      <div ref={statsRef} className="relative z-10 py-24">
+        <div className="container">
+          {/* SVG Sparkline */}
+          <svg
+            className="absolute top-1/2 left-0 w-full h-40 -translate-y-1/2 pointer-events-none hidden lg:block"
+            viewBox="0 0 1200 160"
+            preserveAspectRatio="none"
+          >
+            <motion.path
+              d="M 50 120 Q 200 40, 350 80 T 650 60 T 950 100 T 1150 40"
+              fill="none"
+              stroke="rgba(45, 212, 191, 0.4)"
+              strokeWidth="2"
+              strokeDasharray="6 4"
+              initial={{ pathLength: 0, opacity: 0 }}
+              animate={statsInView ? { pathLength: 1, opacity: 1 } : {}}
+              transition={{ duration: 2.5, ease: 'easeOut' }}
+            />
+            {/* Glow underneath */}
+            <motion.path
+              d="M 50 120 Q 200 40, 350 80 T 650 60 T 950 100 T 1150 40"
+              fill="none"
+              stroke="rgba(45, 212, 191, 0.15)"
+              strokeWidth="8"
+              filter="blur(8px)"
+              initial={{ pathLength: 0, opacity: 0 }}
+              animate={statsInView ? { pathLength: 1, opacity: 1 } : {}}
+              transition={{ duration: 2.5, ease: 'easeOut' }}
+            />
+          </svg>
+
+          {/* Stats Grid - Staggered */}
+          <div className="relative grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-4">
+            {stats.map((stat, i) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: i * 0.15 }}
+                className="text-center"
+                style={{
+                  marginTop: i % 2 === 0 ? '0' : '40px',
+                }}
+              >
+                <p className="text-4xl md:text-5xl font-bold text-white mb-2">
+                  <AnimatedCounter value={stat.value} suffix={stat.suffix} />
+                </p>
+                <p className="text-[#A1A1AA] text-sm">{stat.label}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Scroll Indicator */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.2 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10"
+      >
+        <motion.div
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 2, repeat: Infinity }}
+          className="flex flex-col items-center gap-2 text-[#71717A]/50 font-body"
+        >
+          <span className="text-[10px] tracking-widest uppercase font-semibold">Scroll</span>
+          <svg className="w-5 h-5 text-[#2DD4BF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+          </svg>
+        </motion.div>
+      </motion.div>
     </section>
   );
 }

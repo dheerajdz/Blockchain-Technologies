@@ -15,7 +15,7 @@ const techStack = [
 
 export default function AboutTeaser() {
   return (
-    <section id="about" className="section bg-[#0A0A0A]">
+    <section id="about" className="section bg-[#FAFAFA]">
       <div className="container">
         <div className="max-w-3xl mx-auto text-center">
           {/* Label */}
@@ -24,7 +24,7 @@ export default function AboutTeaser() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="label mb-4 inline-block"
+            className="label mb-4 inline-block text-[#0D9488]"
           >
             About Us
           </motion.span>
@@ -35,10 +35,12 @@ export default function AboutTeaser() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.1 }}
-            className="heading-1 mb-6"
+            className="heading-1 mb-6 text-[#18181B]"
           >
             Building the Future of{' '}
-            <span className="gradient-text">Decentralized Technology</span>
+            <span className="bg-gradient-to-r from-[#0D9488] to-[#2DD4BF] bg-clip-text text-transparent">
+              Decentralized Technology
+            </span>
           </motion.h2>
 
           {/* Description */}
@@ -47,7 +49,7 @@ export default function AboutTeaser() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="body-lg text-[#A1A1AA] mb-12 leading-relaxed"
+            className="body-lg text-[#52525B] mb-12 leading-relaxed"
           >
             BlocksScan Technologies is a pioneering blockchain development company 
             dedicated to creating cutting-edge solutions that bridge the gap between 
@@ -73,7 +75,7 @@ export default function AboutTeaser() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: 0.4 + i * 0.05 }}
                   whileHover={{ y: -4, scale: 1.05 }}
-                  className="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-[#A1A1AA] text-sm hover:border-[#2DD4BF]/30 hover:text-[#2DD4BF] transition-colors cursor-default"
+                  className="px-4 py-2 rounded-full bg-[#18181B]/5 border border-[#18181B]/10 text-[#52525B] text-sm hover:border-[#2DD4BF]/30 hover:text-[#0D9488] transition-colors cursor-default"
                 >
                   {tech.name}
                 </motion.div>

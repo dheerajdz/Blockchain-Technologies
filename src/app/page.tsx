@@ -1,6 +1,5 @@
 import Navbar from "@/components/home/Navbar";
 import HeroSection from "@/components/home/HeroSection";
-import StatBar from "@/components/home/StatBar";
 import AboutTeaser from "@/components/home/AboutTeaser";
 import ServicesOverview from "@/components/home/ServicesOverview";
 import FeaturedProjects from "@/components/home/FeaturedProjects";
@@ -14,7 +13,6 @@ export default function Home() {
     <main className="relative">
       <Navbar />
       <HeroSection />
-      <StatBar />
       <AboutTeaser />
       <ServicesOverview />
       <FeaturedProjects />

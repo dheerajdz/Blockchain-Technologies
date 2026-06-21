@@ -1,0 +1,316 @@
+# Design Spec — Web3 Landing Page (Multivers)
+> Source: https://dribbble.com/shots/27022885-Web3-Landing-page  
+> Extracted from: cdn.dribbble.com image (640×2374px)  
+> Values: visually sampled from the screenshot
+
+---
+
+## 1. Color Palette
+
+### Base / Background
+| Token | Hex | Usage |
+|---|---|---|
+| `color-bg-base` | `#080808` | Page root background |
+| `color-bg-surface` | `#0F0F0F` | Nav, section backgrounds |
+| `color-bg-card` | `#141414` | Card / panel backgrounds |
+| `color-bg-card-border` | `#1E1E1E` | Card border / subtle dividers |
+
+### Brand / Primary Accent (Teal-Cyan)
+| Token | Hex | Usage |
+|---|---|---|
+| `color-accent-primary` | `#23F7DD` | Primary CTA buttons, hover states, icon fills |
+| `color-accent-mid` | `#00D4B8` | Gradient mid-stop, stat highlights |
+| `color-accent-deep` | `#00A896` | Gradient deep-stop, pressed states |
+| `color-accent-glow` | `#0BFFD8` | Glow bloom source color |
+
+### Text
+| Token | Hex | Usage |
+|---|---|---|
+| `color-text-primary` | `#FFFFFF` | H1, H2, card titles |
+| `color-text-secondary` | `#A0A0A0` | Body copy, descriptions |
+| `color-text-muted` | `#555555` | Captions, labels, meta |
+| `color-text-accent` | `#23F7DD` | Links, highlighted numbers, brand name |
+
+### Semantic
+| Token | Hex | Usage |
+|---|---|---|
+| `color-positive` | `#23F7DD` | Positive stat values |
+| `color-negative` | `#FF4D4D` | Negative values (e.g. -$0.02) |
+| `color-border-subtle` | `rgba(255,255,255,0.06)` | Card borders, dividers |
+| `color-border-accent` | `rgba(35,247,221,0.25)` | Accent-outlined buttons |
+
+---
+
+## 2. Background Gradients
+
+### Hero Section — Radial Ambient Glow
+```css
+background:
+  radial-gradient(
+    ellipse 80% 60% at 50% 0%,
+    rgba(35, 247, 221, 0.08) 0%,
+    rgba(0, 0, 0, 0) 70%
+  ),
+  #080808;
+```
+
+### CTA / Bottom Section — Teal Radial Burst
+```css
+background:
+  radial-gradient(
+    ellipse 100% 80% at 50% 100%,
+    rgba(35, 247, 221, 0.35) 0%,
+    rgba(0, 168, 150, 0.15) 35%,
+    rgba(8, 8, 8, 0) 70%
+  ),
+  #080808;
+```
+
+### Full Page Gradient (body-level)
+```css
+background: linear-gradient(
+  180deg,
+  #080808 0%,       /* nav / hero top */
+  #0A0A0A 40%,      /* feature sections */
+  #0D0D0D 65%,      /* stats section */
+  #0A1A18 80%,      /* pre-CTA — teal starts bleeding in */
+  #071A17 90%,      /* CTA section base */
+  #041210 100%      /* footer / brand mark */
+);
+```
+
+### "Multivers" Brand Mark Background
+```css
+background: linear-gradient(
+  135deg,
+  #23F7DD 0%,
+  #00A896 50%,
+  #006B5E 100%
+);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+```
+
+---
+
+## 3. Typography
+
+### Font Stack
+```css
+/* Heading / Display */
+font-family: 'Space Grotesk', 'Syne', system-ui, sans-serif;
+
+/* Body / UI */
+font-family: 'Inter', 'DM Sans', system-ui, sans-serif;
+
+/* Mono / Stats */
+font-family: 'JetBrains Mono', 'IBM Plex Mono', monospace;
+```
+
+> **Note:** The hero headline letterforms match **Space Grotesk Bold** — wide spacing, geometric terminals, slightly condensed caps. Body text is **Inter Regular/Medium**.
+
+### Type Scale
+| Style | Font | Weight | Size | Line Height | Letter Spacing |
+|---|---|---|---|---|---|
+| `display-xl` | Space Grotesk | 700 | 64px | 1.1 | -0.02em |
+| `display-lg` | Space Grotesk | 700 | 48px | 1.15 | -0.02em |
+| `heading-1` | Space Grotesk | 600 | 36px | 1.2 | -0.01em |
+| `heading-2` | Space Grotesk | 600 | 28px | 1.25 | -0.01em |
+| `heading-3` | Space Grotesk | 500 | 22px | 1.3 | 0 |
+| `body-lg` | Inter | 400 | 18px | 1.6 | 0 |
+| `body-md` | Inter | 400 | 16px | 1.6 | 0 |
+| `body-sm` | Inter | 400 | 14px | 1.5 | 0 |
+| `label` | Inter | 500 | 12px | 1.4 | 0.04em |
+| `stat-number` | JetBrains Mono | 600 | 32px | 1.2 | -0.02em |
+| `brand-mark` | Space Grotesk | 800 | 120px | 1.0 | -0.04em |
+| `caption` | Inter | 400 | 12px | 1.4 | 0.01em |
+
+---
+
+## 4. Glassmorphism & Card Styles
+
+### Standard Feature Card
+```css
+.card {
+  background: rgba(20, 20, 20, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+```
+
+### Accent-Bordered Card (teal trim)
+```css
+.card-accent {
+  background: rgba(15, 15, 15, 0.80);
+  border: 1px solid rgba(35, 247, 221, 0.18);
+  border-radius: 16px;
+  backdrop-filter: blur(16px);
+}
+```
+
+### Stat Pill / Badge
+```css
+.stat-badge {
+  background: rgba(35, 247, 221, 0.08);
+  border: 1px solid rgba(35, 247, 221, 0.20);
+  border-radius: 999px;
+  padding: 4px 12px;
+  color: #23F7DD;
+}
+```
+
+---
+
+## 5. Glow / Bloom Effects
+
+### Button Glow
+```css
+.btn-primary {
+  background: #23F7DD;
+  color: #080808;
+  border-radius: 8px;
+  box-shadow:
+    0 0 16px rgba(35, 247, 221, 0.45),
+    0 0 40px rgba(35, 247, 221, 0.20);
+}
+
+.btn-primary:hover {
+  box-shadow:
+    0 0 24px rgba(35, 247, 221, 0.65),
+    0 0 60px rgba(35, 247, 221, 0.30);
+}
+```
+
+### Button Outlined
+```css
+.btn-outline {
+  background: transparent;
+  border: 1px solid rgba(35, 247, 221, 0.35);
+  color: #23F7DD;
+  border-radius: 8px;
+}
+```
+
+### Section Ambient Glow (CTA block)
+```css
+.section-cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 60% 50% at 50% 110%,
+    rgba(35, 247, 221, 0.30) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+```
+
+### Card Inner Glow (top edge highlight)
+```css
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 10%; right: 10%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(35, 247, 221, 0.4),
+    transparent
+  );
+}
+```
+
+---
+
+## 6. Spacing & Layout
+
+| Token | Value | Usage |
+|---|---|---|
+| `space-xs` | 4px | Icon gaps, tight labels |
+| `space-sm` | 8px | Badge padding |
+| `space-md` | 16px | Card inner padding |
+| `space-lg` | 24px | Section inner padding |
+| `space-xl` | 48px | Between sections |
+| `space-2xl` | 80px | Section vertical rhythm |
+| `space-3xl` | 120px | Hero padding |
+| `radius-sm` | 8px | Buttons, tags |
+| `radius-md` | 12px | Small cards |
+| `radius-lg` | 16px | Feature cards |
+| `radius-xl` | 24px | Large content panels |
+| `container-max` | 1200px | Page max-width |
+| `container-pad` | 24px | Mobile horizontal padding |
+
+---
+
+## 7. Sections Overview
+
+| Section | Background | Key Colors |
+|---|---|---|
+| Navigation | `#080808` solid | White text, teal CTA |
+| Hero | Dark + subtle teal radial top glow | White headline, gray body, teal button |
+| Stats Bar | `#0F0F0F` | Mono numbers white, labels gray |
+| Feature Cards (row 1) | Glassmorphism cards on `#080808` | White text, teal accents, subtle borders |
+| Feature Cards (row 2) | Same — device mockup present | |
+| "Future-Proof" Stats | Dark with numeric highlights | Teal for numbers, white for labels |
+| CTA Block | Teal radial burst from bottom | White text, teal full-bleed glow |
+| Brand Footer Mark | Full-width teal gradient text | `#23F7DD → #006B5E` |
+
+---
+
+## 8. CSS Custom Properties (Ready to Paste)
+
+```css
+:root {
+  /* Backgrounds */
+  --color-bg-base:          #080808;
+  --color-bg-surface:       #0F0F0F;
+  --color-bg-card:          #141414;
+
+  /* Accent */
+  --color-accent:           #23F7DD;
+  --color-accent-mid:       #00D4B8;
+  --color-accent-deep:      #00A896;
+  --color-accent-glow:      rgba(35, 247, 221, 0.35);
+
+  /* Text */
+  --color-text-primary:     #FFFFFF;
+  --color-text-secondary:   #A0A0A0;
+  --color-text-muted:       #555555;
+  --color-text-accent:      #23F7DD;
+
+  /* Borders */
+  --color-border-subtle:    rgba(255, 255, 255, 0.06);
+  --color-border-accent:    rgba(35, 247, 221, 0.25);
+
+  /* Radius */
+  --radius-sm:  8px;
+  --radius-md:  12px;
+  --radius-lg:  16px;
+  --radius-xl:  24px;
+  --radius-pill: 999px;
+
+  /* Typography */
+  --font-heading: 'Space Grotesk', system-ui, sans-serif;
+  --font-body:    'Inter', system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+
+  /* Shadows / Glows */
+  --glow-accent-sm:   0 0 16px rgba(35, 247, 221, 0.45);
+  --glow-accent-md:   0 0 40px rgba(35, 247, 221, 0.25);
+  --glow-accent-lg:   0 0 80px rgba(35, 247, 221, 0.15);
+}
+```
+
+---
+
+## 9. Google Fonts Import
+
+```html
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+```

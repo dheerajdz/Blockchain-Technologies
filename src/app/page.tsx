@@ -1,21 +1,27 @@
-import Navigation from "@/components/Navigation";
-import HeroSection from "@/components/sections/HeroSection";
-import StatsSection from "@/components/sections/StatsSection";
-import SecuritySection from "@/components/sections/SecuritySection";
-import ValidatorsSection from "@/components/sections/ValidatorsSection";
-import RoadmapSection from "@/components/sections/RoadmapSection";
-import FooterSection from "@/components/sections/FooterSection";
+import Navbar from "@/components/home/Navbar";
+import HeroSection from "@/components/home/HeroSection";
+import StatBar from "@/components/home/StatBar";
+import AboutTeaser from "@/components/home/AboutTeaser";
+import ServicesOverview from "@/components/home/ServicesOverview";
+import FeaturedProjects from "@/components/home/FeaturedProjects";
+import TeamPreview from "@/components/home/TeamPreview";
+import LatestBlogs from "@/components/home/LatestBlogs";
+import ContactCTA from "@/components/home/ContactCTA";
+import Footer from "@/components/home/Footer";
 
 export default function Home() {
   return (
-    <main className="relative bg-[#020205] text-white">
-      <Navigation />
+    <main className="relative">
+      <Navbar />
       <HeroSection />
-      <StatsSection />
-      <SecuritySection />
-      <ValidatorsSection />
-      <RoadmapSection />
-      <FooterSection />
+      <StatBar />
+      <AboutTeaser />
+      <ServicesOverview />
+      <FeaturedProjects />
+      <TeamPreview />
+      <LatestBlogs />
+      <ContactCTA />
+      <Footer />
     </main>
   );
 }

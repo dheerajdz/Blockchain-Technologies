@@ -132,12 +132,12 @@ function ProjectCard({ project, index, featured = false }: { project: Project; i
         )}
       </div>
 
-      {/* Content — flex-grow to fill remaining space */}
+      {/* Content — flex column with anchored footer */}
       <div className="p-5 flex flex-col flex-grow">
         <h3 className={`font-semibold text-[#18181B] mb-2 ${featured ? 'text-xl' : 'text-lg'}`}>
           {project.title}
         </h3>
-        <p className={`text-[#52525B] mb-4 flex-grow ${featured ? 'text-sm' : 'text-xs'}`}>
+        <p className={`text-[#52525B] mb-4 ${featured ? 'text-sm' : 'text-xs'}`}>
           {project.description}
         </p>
 

@@ -190,7 +190,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
         <h3 className="heading-3 text-white mb-2 group-hover:text-accent-300 transition-colors">
           {project.title}
         </h3>
-        <p className="text-[#A1A1AA] text-sm leading-relaxed mb-4 flex-grow">
+        <p className="text-[#A1A1AA] text-sm leading-relaxed mb-4">
           {project.description}
         </p>
 

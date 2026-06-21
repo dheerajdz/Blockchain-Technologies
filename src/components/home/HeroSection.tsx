@@ -262,31 +262,38 @@ export default function HeroSection() {
       {/* Stats Section - Woven into Gradient */}
       <div ref={statsRef} className="relative z-10 py-24">
         <div className="container">
-          {/* SVG Sparkline */}
+          {/* SVG Sparkline with Glow */}
           <svg
             className="absolute top-1/2 left-0 w-full h-40 -translate-y-1/2 pointer-events-none hidden lg:block"
             viewBox="0 0 1200 160"
             preserveAspectRatio="none"
           >
+            <defs>
+              <filter id="sparklineGlow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="3" result="blur" />
+              </filter>
+            </defs>
+            {/* Glow path */}
             <motion.path
               d="M 50 120 Q 200 40, 350 80 T 650 60 T 950 100 T 1150 40"
               fill="none"
-              stroke="rgba(42, 70, 139, 0.4)"
+              stroke="#8FA8DC"
+              strokeWidth="4"
+              filter="url(#sparklineGlow)"
+              opacity="0.25"
+              initial={{ pathLength: 0, opacity: 0 }}
+              animate={statsInView ? { pathLength: 1, opacity: 0.25 } : {}}
+              transition={{ duration: 2.5, ease: 'easeOut' }}
+            />
+            {/* Main path */}
+            <motion.path
+              d="M 50 120 Q 200 40, 350 80 T 650 60 T 950 100 T 1150 40"
+              fill="none"
+              stroke="#8FA8DC"
               strokeWidth="2"
               strokeDasharray="6 4"
               initial={{ pathLength: 0, opacity: 0 }}
-              animate={statsInView ? { pathLength: 1, opacity: 1 } : {}}
-              transition={{ duration: 2.5, ease: 'easeOut' }}
-            />
-            {/* Glow underneath */}
-            <motion.path
-              d="M 50 120 Q 200 40, 350 80 T 650 60 T 950 100 T 1150 40"
-              fill="none"
-              stroke="rgba(42, 70, 139, 0.15)"
-              strokeWidth="8"
-              filter="blur(8px)"
-              initial={{ pathLength: 0, opacity: 0 }}
-              animate={statsInView ? { pathLength: 1, opacity: 1 } : {}}
+              animate={statsInView ? { pathLength: 1, opacity: 0.7 } : {}}
               transition={{ duration: 2.5, ease: 'easeOut' }}
             />
           </svg>

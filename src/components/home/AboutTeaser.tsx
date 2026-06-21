@@ -15,7 +15,14 @@ const techStack = [
 
 export default function AboutTeaser() {
   return (
-    <section id="about" className="section bg-[#FAFAFA]">
+    <section id="about" className="relative section bg-[#FAFAFA] pt-32 pb-24">
+      {/* Gradient bleed from hero */}
+      <div 
+        className="absolute top-0 left-0 right-0 h-32 pointer-events-none"
+        style={{
+          background: 'linear-gradient(to bottom, #E8ECF7 0%, #FAFAFA 100%)',
+        }}
+      />
       <div className="container">
         <div className="max-w-3xl mx-auto text-center">
           {/* Label */}

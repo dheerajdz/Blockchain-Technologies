@@ -60,20 +60,16 @@ body {
 /* ─── CONTINUOUS GRADIENT FLOW ─── */
 .gradient-flow {
   background: 
-    /* Top: near-black */
+    /* Smooth multi-stop blend from black → navy → white */
     linear-gradient(
-      180deg,
+      to bottom,
       #0A0A0A 0%,
-      #0A0A0A 15%,
-      /* Navy bloom from center-bottom */
-      #0D1117 35%,
-      #151B2E 50%,
-      #1A2540 60%,
-      #223255 70%,
-      #2A468B 85%,
-      /* Transition to white */
-      #E8ECF5 95%,
-      #FAFAFA 100%
+      #0A0A0A 8%,
+      #16234F 28%,
+      #2A468B 42%,
+      #6E89C2 62%,
+      #E8ECF7 82%,
+      #FFFFFF 100%
     );
 }
 

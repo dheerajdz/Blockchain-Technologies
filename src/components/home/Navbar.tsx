@@ -3,27 +3,34 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 const navLinks = [
-  { href: '#home', label: 'Home' },
-  { href: '#about', label: 'About' },
-  { href: '#services', label: 'Services' },
-  { href: '#projects', label: 'Projects' },
-  { href: '#team', label: 'Team' },
-  { href: '#blog', label: 'Blog' },
-  { href: '#careers', label: 'Careers' },
-  { href: '#contact', label: 'Contact' },
+  { href: '/', label: 'Home' },
+  { href: '/about', label: 'About' },
+  { href: '/services', label: 'Services' },
+  { href: '/projects', label: 'Projects' },
+  { href: '/team', label: 'Team' },
+  { href: '/blog', label: 'Blog' },
+  { href: '/careers', label: 'Careers' },
+  { href: '/contact', label: 'Contact' },
 ];
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const isActive = (href: string) => {
+    if (href === '/') return pathname === '/';
+    return pathname?.startsWith(href);
+  };
 
   return (
     <header className="fixed top-4 left-0 right-0 z-50 px-4">
@@ -47,24 +54,28 @@ export default function Navbar() {
         {/* Desktop Nav Links */}
         <div className="hidden lg:flex items-center gap-1">
           {navLinks.map((link) => (
-            <a
+            <Link
               key={link.href}
               href={link.href}
-              className="nav-link px-3 py-2 rounded-full hover:bg-white/5 transition-colors"
+              className={`px-3 py-2 rounded-full transition-colors ${
+                isActive(link.href)
+                  ? 'text-white bg-white/10'
+                  : 'nav-link hover:bg-white/5'
+              }`}
             >
               {link.label}
-            </a>
+            </Link>
           ))}
         </div>
 
         {/* CTA + Mobile Toggle */}
         <div className="flex items-center gap-3">
-          <a
-            href="#contact"
+          <Link
+            href="/contact"
             className="hidden sm:inline-flex btn btn-primary text-sm py-2.5 px-5"
           >
             Get Started
-          </a>
+          </Link>
 
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
@@ -94,25 +105,32 @@ export default function Navbar() {
           >
             <div className="flex flex-col gap-1">
               {navLinks.map((link, i) => (
-                <motion.a
+                <motion.div
                   key={link.href}
-                  href={link.href}
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.05 }}
-                  onClick={() => setMobileOpen(false)}
-                  className="px-4 py-3 rounded-xl text-[#A1A1AA] hover:text-white hover:bg-white/5 transition-colors"
                 >
-                  {link.label}
-                </motion.a>
+                  <Link
+                    href={link.href}
+                    onClick={() => setMobileOpen(false)}
+                    className={`block px-4 py-3 rounded-xl transition-colors ${
+                      isActive(link.href)
+                        ? 'text-white bg-white/10'
+                        : 'text-[#A1A1AA] hover:text-white hover:bg-white/5'
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                </motion.div>
               ))}
-              <a
-                href="#contact"
+              <Link
+                href="/contact"
                 onClick={() => setMobileOpen(false)}
-                className="btn btn-primary text-sm py-2.5 px-5 mt-2 justify-center"
+                className="btn btn-primary text-sm py-2.5 px-5 mt-2 justify-center text-center"
               >
                 Get Started
-              </a>
+              </Link>
             </div>
           </motion.div>
         )}

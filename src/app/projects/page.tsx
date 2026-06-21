@@ -2,7 +2,8 @@
 
 import { motion } from 'motion/react';
 import { useState, useEffect } from 'react';
-import { ExternalLink, Github } from 'lucide-react';
+import Image from 'next/image';
+import { ExternalLink, Github, Globe, Bot, Blocks, MessageSquare, FileCode, LayoutGrid } from 'lucide-react';
 import Navbar from '@/components/home/Navbar';
 import Footer from '@/components/home/Footer';
 
@@ -84,8 +85,34 @@ const categories = ['All', 'Explorer', 'AI', 'Infrastructure', 'Social', 'DeFi']
 
 /* ─── COMPONENTS ─── */
 
+const projectIcons: Record<string, React.ElementType> = {
+  'XDCScan Explorer': Globe,
+  'OpenScan AI': Bot,
+  'GCX Platform': Blocks,
+  'XDCGram': MessageSquare,
+  'BlocksScan API': LayoutGrid,
+  'Smart Contract Library': FileCode,
+};
+
+function getProjectIcon(title: string) {
+  return projectIcons[title] || FileCode;
+}
+
+function ProjectPlaceholder({ title }: { title: string }) {
+  const Icon = getProjectIcon(title);
+  return (
+    <div className="w-full h-full bg-gradient-to-br from-accent-500/30 to-accent-600/40 flex items-center justify-center">
+      <Icon className="h-12 w-12 text-accent-300/60" strokeWidth={1.5} />
+    </div>
+  );
+}
+
 function ProjectCard({ project, index }: { project: Project; index: number }) {
   const [hovered, setHovered] = useState(false);
+  const [imageError, setImageError] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  const hasValidImage = project.image && project.image.length > 0 && !imageError;
 
   return (
     <motion.div
@@ -95,20 +122,31 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
       transition={{ duration: 0.6, delay: index * 0.08 }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className="card overflow-hidden group cursor-pointer"
+      className="card overflow-hidden group cursor-pointer h-full flex flex-col"
     >
       {/* Image */}
-      <div className="relative h-56 overflow-hidden">
+      <div className="relative h-56 overflow-hidden flex-shrink-0">
         <motion.div
           animate={hovered ? { scale: 1.05 } : { scale: 1 }}
           transition={{ duration: 0.4 }}
           className="w-full h-full"
         >
-          <div className="w-full h-full bg-gradient-to-br from-accent-500/20 to-accent-600/30 flex items-center justify-center">
-            <span className="text-5xl font-heading font-bold text-accent-500/30">
-              {project.title[0]}
-            </span>
-          </div>
+          {hasValidImage ? (
+            <>
+              <Image
+                src={project.image}
+                alt={project.title}
+                fill
+                className={`object-cover transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+                onError={() => setImageError(true)}
+                onLoad={() => setImageLoaded(true)}
+                sizes="(max-width: 768px) 100vw, 33vw"
+              />
+              {!imageLoaded && <ProjectPlaceholder title={project.title} />}
+            </>
+          ) : (
+            <ProjectPlaceholder title={project.title} />
+          )}
         </motion.div>
 
         {/* Overlay on hover */}
@@ -145,14 +183,14 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
       </div>
 
       {/* Content */}
-      <div className="p-6">
+      <div className="p-6 flex flex-col flex-grow">
         {/* Category badge */}
         <span className="badge mb-3 inline-block">{project.category}</span>
 
         <h3 className="heading-3 text-white mb-2 group-hover:text-accent-300 transition-colors">
           {project.title}
         </h3>
-        <p className="text-[#A1A1AA] text-sm leading-relaxed mb-4">
+        <p className="text-[#A1A1AA] text-sm leading-relaxed mb-4 flex-grow">
           {project.description}
         </p>
 
@@ -263,7 +301,7 @@ export default function ProjectsPage() {
           </motion.div>
 
           {/* Grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
             {filteredProjects.map((project, i) => (
               <ProjectCard key={project.id} project={project} index={i} />
             ))}

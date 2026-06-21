@@ -3,6 +3,7 @@
 import { motion } from 'motion/react';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { Globe, Bot, Blocks, MessageSquare, FileCode, ExternalLink } from 'lucide-react';
 
 interface Project {
   id: string;
@@ -11,6 +12,19 @@ interface Project {
   technologies: string[];
   image: string;
   featured?: boolean;
+  link?: string;
+}
+
+// Icon mapping for project placeholders
+const projectIcons: Record<string, React.ElementType> = {
+  'XDCScan Explorer': Globe,
+  'OpenScan AI': Bot,
+  'GCX Platform': Blocks,
+  'XDCGram': MessageSquare,
+};
+
+function getProjectIcon(title: string) {
+  return projectIcons[title] || FileCode;
 }
 
 // Fallback static projects
@@ -22,32 +36,49 @@ const fallbackProjects: Project[] = [
     technologies: ['Next.js', 'TypeScript', 'XDC'],
     image: '/projects/xdcscan.jpg',
     featured: true,
+    link: '#',
   },
   {
     id: '2',
     title: 'OpenScan AI',
-    description: 'AI-powered blockchain analytics platform with intelligent transaction monitoring.',
+    description: 'AI-powered blockchain analytics platform with intelligent transaction monitoring and predictive insights.',
     technologies: ['React', 'Python', 'AI'],
     image: '/projects/openscan.jpg',
+    link: '#',
   },
   {
     id: '3',
     title: 'GCX Platform',
-    description: 'Next-generation cross-chain interoperability protocol.',
+    description: 'Next-generation cross-chain interoperability protocol enabling seamless asset transfers across networks.',
     technologies: ['Solidity', 'Node.js', 'Graph'],
     image: '/projects/gcx.jpg',
+    link: '#',
   },
   {
     id: '4',
     title: 'XDCGram',
-    description: 'Social messaging platform built on XDC Network with token incentives.',
+    description: 'Social messaging platform built on XDC Network with token incentives and community features.',
     technologies: ['React Native', 'Firebase', 'XDC'],
     image: '/projects/xdcgram.jpg',
+    link: '#',
   },
 ];
 
+function ProjectPlaceholder({ title }: { title: string }) {
+  const Icon = getProjectIcon(title);
+  return (
+    <div className="w-full h-full bg-gradient-to-br from-[#2A468B] to-[#4C6FC2] flex items-center justify-center">
+      <Icon className="h-12 w-12 text-white/80" strokeWidth={1.5} />
+    </div>
+  );
+}
+
 function ProjectCard({ project, index, featured = false }: { project: Project; index: number; featured?: boolean }) {
   const [hovered, setHovered] = useState(false);
+  const [imageError, setImageError] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  const hasValidImage = project.image && project.image.length > 0 && !imageError;
 
   return (
     <motion.div
@@ -57,20 +88,33 @@ function ProjectCard({ project, index, featured = false }: { project: Project; i
       transition={{ duration: 0.6, delay: index * 0.1 }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className={`card-light overflow-hidden group cursor-pointer ${
+      className={`card-light overflow-hidden group cursor-pointer h-full flex flex-col ${
         featured ? 'md:col-span-2 md:row-span-2' : ''
       }`}
     >
       {/* Image */}
-      <div className={`relative overflow-hidden ${featured ? 'h-64 md:h-80' : 'h-48'}`}>
+      <div className={`relative overflow-hidden flex-shrink-0 ${featured ? 'h-64 md:h-80' : 'h-48'}`}>
         <motion.div
           animate={hovered ? { scale: 1.05 } : { scale: 1 }}
           transition={{ duration: 0.4 }}
           className="w-full h-full"
         >
-          <div className="w-full h-full bg-gradient-to-br from-[#2A468B]/20 to-[#1A2F5C]/30 flex items-center justify-center">
-            <span className="text-4xl">{project.title[0]}</span>
-          </div>
+          {hasValidImage ? (
+            <>
+              <Image
+                src={project.image}
+                alt={project.title}
+                fill
+                className={`object-cover transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+                onError={() => setImageError(true)}
+                onLoad={() => setImageLoaded(true)}
+                sizes={featured ? '(max-width: 768px) 100vw, 66vw' : '(max-width: 768px) 100vw, 33vw'}
+              />
+              {!imageLoaded && <ProjectPlaceholder title={project.title} />}
+            </>
+          ) : (
+            <ProjectPlaceholder title={project.title} />
+          )}
         </motion.div>
 
         {/* Overlay on hover */}
@@ -79,19 +123,26 @@ function ProjectCard({ project, index, featured = false }: { project: Project; i
           animate={hovered ? { opacity: 1 } : { opacity: 0 }}
           transition={{ duration: 0.3 }}
         />
+
+        {/* Featured badge */}
+        {featured && (
+          <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-white/90 backdrop-blur-sm text-[#2A468B] text-xs font-semibold">
+            Featured
+          </div>
+        )}
       </div>
 
-      {/* Content */}
-      <div className="p-5">
+      {/* Content — flex-grow to fill remaining space */}
+      <div className="p-5 flex flex-col flex-grow">
         <h3 className={`font-semibold text-[#18181B] mb-2 ${featured ? 'text-xl' : 'text-lg'}`}>
           {project.title}
         </h3>
-        <p className={`text-[#52525B] mb-4 ${featured ? 'text-sm' : 'text-xs'}`}>
+        <p className={`text-[#52525B] mb-4 flex-grow ${featured ? 'text-sm' : 'text-xs'}`}>
           {project.description}
         </p>
 
         {/* Tech tags */}
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 mb-4">
           {project.technologies.map((tech) => (
             <span
               key={tech}
@@ -100,6 +151,17 @@ function ProjectCard({ project, index, featured = false }: { project: Project; i
               {tech}
             </span>
           ))}
+        </div>
+
+        {/* View Project link — anchored to bottom */}
+        <div className="mt-auto pt-3 border-t border-black/5">
+          <a
+            href={project.link || '#'}
+            className="inline-flex items-center gap-2 text-sm font-medium text-[#2A468B] hover:text-[#4C6FC2] transition-colors group/link"
+          >
+            View Project
+            <ExternalLink className="h-4 w-4 transition-transform group-hover/link:translate-x-0.5" />
+          </a>
         </div>
       </div>
     </motion.div>
@@ -165,7 +227,7 @@ export default function FeaturedProjects() {
         </div>
 
         {/* Bento Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
           <ProjectCard project={featured} index={0} featured />
           {others.map((project, i) => (
             <ProjectCard key={project.id} project={project} index={i + 1} />

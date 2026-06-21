@@ -2,48 +2,57 @@
 
 import { motion } from 'motion/react';
 import { useState } from 'react';
+import {
+  ScrollText,
+  Layers,
+  Globe,
+  Search,
+  BrainCircuit,
+  Lightbulb,
+} from 'lucide-react';
 
 interface Service {
   title: string;
   description: string;
-  icon: string;
+  icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
 }
 
 const services: Service[] = [
   {
     title: 'Smart Contracts',
     description: 'Secure, audited smart contract development for Ethereum, XDC, and EVM-compatible chains.',
-    icon: '🔗',
+    icon: ScrollText,
   },
   {
     title: 'DApp Development',
     description: 'End-to-end decentralized application development with intuitive UX and robust backends.',
-    icon: '⚡',
+    icon: Layers,
   },
   {
     title: 'Web3 Solutions',
     description: 'Custom Web3 integrations including wallet connectivity, token standards, and DeFi protocols.',
-    icon: '🌐',
+    icon: Globe,
   },
   {
     title: 'Blockchain Explorer',
     description: 'High-performance block explorers with real-time data, advanced search, and analytics dashboards.',
-    icon: '🔍',
+    icon: Search,
   },
   {
     title: 'AI Integration',
     description: 'Intelligent automation and AI-powered analytics for blockchain data and user experiences.',
-    icon: '🤖',
+    icon: BrainCircuit,
   },
   {
     title: 'Consulting',
     description: 'Strategic blockchain consulting for enterprise adoption, tokenomics, and ecosystem design.',
-    icon: '💡',
+    icon: Lightbulb,
   },
 ];
 
 function ServiceCard({ service, index }: { service: Service; index: number }) {
   const [hovered, setHovered] = useState(false);
+  const Icon = service.icon;
 
   return (
     <motion.div
@@ -55,17 +64,20 @@ function ServiceCard({ service, index }: { service: Service; index: number }) {
       onMouseLeave={() => setHovered(false)}
       className="card p-6 md:p-8 cursor-default group"
     >
-      {/* Icon */}
+      {/* Icon Badge */}
       <motion.div
         animate={hovered ? { scale: 1.1, rotate: 5 } : { scale: 1, rotate: 0 }}
         transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-        className="w-12 h-12 rounded-xl bg-[#2A468B]/10 border border-[#2A468B]/20 flex items-center justify-center text-2xl mb-5"
+        className="flex h-12 w-12 items-center justify-center rounded-full bg-accent-500/10 border border-accent-500/20 mb-5"
       >
-        {service.icon}
+        <Icon
+          className="h-6 w-6 text-accent-300"
+          strokeWidth={1.5}
+        />
       </motion.div>
 
       {/* Title */}
-      <h3 className="heading-3 text-white mb-3 group-hover:text-[#4C6FC2] transition-colors">
+      <h3 className="heading-3 text-white mb-3 group-hover:text-accent-300 transition-colors">
         {service.title}
       </h3>
 
@@ -98,7 +110,7 @@ export default function ServicesOverview() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="label mb-4 inline-block text-[#4C6FC2]"
+            className="label mb-4 inline-block text-accent-300"
           >
             Our Services
           </motion.span>

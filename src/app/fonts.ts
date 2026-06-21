@@ -1,13 +1,16 @@
-import localFont from 'next/font/local'
+import { Geist } from 'next/font/google'
 
-export const roobert = localFont({
-  src: [
-    { path: '../public/fonts/Roobert-Regular.woff2', weight: '400', style: 'normal' },
-    { path: '../public/fonts/Roobert-Medium.woff2', weight: '500', style: 'normal' },
-    { path: '../public/fonts/Roobert-SemiBold.woff2', weight: '600', style: 'normal' },
-    { path: '../public/fonts/Roobert-Bold.woff2', weight: '700', style: 'normal' },
-  ],
+// NOTE: Roobert is a commercial font by Displaay Type Foundry.
+// To use Roobert, purchase and place the font files in public/fonts/:
+// - Roobert-Regular.woff2
+// - Roobert-Medium.woff2
+// - Roobert-SemiBold.woff2
+// - Roobert-Bold.woff2
+//
+// Until then, we use Geist as the primary font (closest free alternative).
+
+export const roobert = Geist({
   variable: '--font-roobert',
+  subsets: ['latin'],
   display: 'swap',
-  fallback: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
 })

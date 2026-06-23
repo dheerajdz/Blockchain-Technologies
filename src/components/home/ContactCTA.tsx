@@ -51,8 +51,8 @@ export default function ContactCTA() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="text-lg text-[#A1A1AA] mb-10 leading-relaxed"
           >
-            Let's discuss how BlocksScan Technologies can help you achieve your blockchain goals.
-            Whether it's a new project or scaling an existing one, we're here to help.
+            Let&apos;s discuss how BlocksScan Technologies can help you achieve your blockchain goals.
+            Whether it&apos;s a new project or scaling an existing one, we&apos;re here to help.
           </motion.p>
 
           {/* CTA Buttons */}

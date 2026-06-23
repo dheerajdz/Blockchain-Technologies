@@ -3,6 +3,7 @@
 import { motion } from 'motion/react';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { ExternalLink, Github, Globe, Bot, Blocks, MessageSquare, FileCode, LayoutGrid } from 'lucide-react';
 import Navbar from '@/components/home/Navbar';
 import Footer from '@/components/home/Footer';
@@ -94,12 +95,9 @@ const projectIcons: Record<string, React.ElementType> = {
   'Smart Contract Library': FileCode,
 };
 
-function getProjectIcon(title: string) {
-  return projectIcons[title] || FileCode;
-}
-
 function ProjectPlaceholder({ title }: { title: string }) {
-  const Icon = getProjectIcon(title);
+  const iconKey = title as keyof typeof projectIcons;
+  const Icon = projectIcons[iconKey] || FileCode;
   return (
     <div className="w-full h-full bg-gradient-to-br from-accent-500/30 to-accent-600/40 flex items-center justify-center">
       <Icon className="h-12 w-12 text-accent-300/60" strokeWidth={1.5} />
@@ -350,12 +348,12 @@ export default function ProjectsPage() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="flex flex-col sm:flex-row gap-4 justify-center"
           >
-            <a href="/contact" className="btn btn-primary">
+            <Link href="/contact" className="btn btn-primary">
               Start a Project
-            </a>
-            <a href="/services" className="btn btn-outline">
+            </Link>
+            <Link href="/services" className="btn btn-outline">
               Explore Services
-            </a>
+            </Link>
           </motion.div>
         </div>
       </section>

@@ -250,7 +250,7 @@ export default function CareersPage() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="text-[#A1A1AA] body-lg max-w-2xl"
           >
-            We're always looking for passionate individuals who believe in the power of
+            We&apos;re always looking for passionate individuals who believe in the power of
             decentralized technology. Explore our open positions and internship opportunities.
           </motion.p>
         </div>
@@ -373,7 +373,7 @@ export default function CareersPage() {
             transition={{ duration: 0.8 }}
             className="heading-1 mb-6"
           >
-            Don't See a <span className="gradient-text">Perfect Fit</span>?
+            Don&apos;t See a <span className="gradient-text">Perfect Fit</span>?
           </motion.h2>
 
           <motion.p
@@ -383,8 +383,8 @@ export default function CareersPage() {
             transition={{ duration: 0.8, delay: 0.1 }}
             className="text-[#A1A1AA] body-md max-w-xl mx-auto mb-8"
           >
-            We're always interested in meeting talented people. Send us your resume and tell us
-            why you'd be a great addition to the team.
+            We&apos;re always interested in meeting talented people. Send us your resume and tell us
+            why you&apos;d be a great addition to the team.
           </motion.p>
 
           <motion.div

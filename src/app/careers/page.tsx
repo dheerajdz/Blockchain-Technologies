@@ -9,7 +9,8 @@ import Footer from '@/components/home/Footer';
 /* ─── DATA ─── */
 
 interface Job {
-  id: string;
+  _id?: string;
+  id?: string;
   title: string;
   department: string;
   location: string;
@@ -18,101 +19,8 @@ interface Job {
   requirements: string[];
 }
 
-const jobs: Job[] = [
-  {
-    id: '1',
-    title: 'Senior Blockchain Developer',
-    department: 'Engineering',
-    location: 'Mumbai, India (Hybrid)',
-    type: 'Full-time',
-    description: 'Lead the development of smart contracts and blockchain infrastructure. You will architect, build, and maintain core protocol components.',
-    requirements: [
-      '5+ years of software engineering experience',
-      '3+ years of Solidity / EVM development',
-      'Experience with Hardhat, Foundry, or Truffle',
-      'Deep understanding of DeFi protocols and token standards',
-      'Strong testing and security mindset',
-    ],
-  },
-  {
-    id: '2',
-    title: 'Full Stack Developer',
-    department: 'Engineering',
-    location: 'Mumbai, India (Hybrid)',
-    type: 'Full-time',
-    description: 'Build and maintain user-facing applications, APIs, and internal tools across the BlocksScan product suite.',
-    requirements: [
-      '3+ years of full-stack development',
-      'Proficiency in React / Next.js and Node.js',
-      'Experience with TypeScript and PostgreSQL',
-      'Familiarity with Web3.js or Ethers.js',
-      'Strong UI/UX sensibility',
-    ],
-  },
-  {
-    id: '3',
-    title: 'UI/UX Designer',
-    department: 'Design',
-    location: 'Mumbai, India (Remote)',
-    type: 'Full-time',
-    description: 'Design intuitive, beautiful interfaces for blockchain products. You will own the design system and work closely with engineering.',
-    requirements: [
-      '3+ years of product design experience',
-      'Mastery of Figma and prototyping tools',
-      'Experience with design systems and component libraries',
-      'Portfolio demonstrating web and mobile work',
-      'Interest in blockchain / Web3 is a plus',
-    ],
-  },
-  {
-    id: '4',
-    title: 'DevOps Engineer',
-    department: 'Infrastructure',
-    location: 'Mumbai, India (Hybrid)',
-    type: 'Full-time',
-    description: 'Manage cloud infrastructure, CI/CD pipelines, and node operations for our blockchain services.',
-    requirements: [
-      '3+ years of DevOps / SRE experience',
-      'Strong Linux and containerization skills (Docker, Kubernetes)',
-      'Experience with AWS, GCP, or Azure',
-      'Infrastructure-as-Code (Terraform, Ansible)',
-      'Monitoring and observability (Prometheus, Grafana)',
-    ],
-  },
-  {
-    id: '5',
-    title: 'Blockchain Intern',
-    department: 'Engineering',
-    location: 'Mumbai, India (On-site)',
-    type: 'Internship',
-    description: 'A 6-month internship for passionate students or recent graduates looking to break into blockchain development.',
-    requirements: [
-      'Currently pursuing or recently completed CS / IT degree',
-      'Basic understanding of blockchain concepts',
-      'Familiarity with JavaScript / TypeScript',
-      'Eagerness to learn Solidity and smart contract development',
-      'Strong problem-solving and communication skills',
-    ],
-  },
-  {
-    id: '6',
-    title: 'Marketing & Content Intern',
-    department: 'Growth',
-    location: 'Mumbai, India (Remote)',
-    type: 'Internship',
-    description: 'Help grow the BlocksScan brand through content creation, social media, and community engagement.',
-    requirements: [
-      'Currently pursuing or recently completed Marketing / Communications degree',
-      'Excellent written English skills',
-      'Experience with social media management',
-      'Basic graphic design skills (Canva / Figma)',
-      'Interest in blockchain and technology trends',
-    ],
-  },
-];
-
 const departments = ['All', 'Engineering', 'Design', 'Infrastructure', 'Growth'];
-const types = ['All', 'Full-time', 'Internship'];
+const types = ['All', 'Full-time', 'Part-time', 'Contract', 'Internship'];
 
 /* ─── COMPONENTS ─── */
 
@@ -203,8 +111,22 @@ function JobCard({ job, index }: { job: Job; index: number }) {
 /* ─── PAGE ─── */
 
 export default function CareersPage() {
+  const [jobs, setJobs] = useState<Job[]>([]);
   const [activeDept, setActiveDept] = useState('All');
   const [activeType, setActiveType] = useState('All');
+
+  useEffect(() => {
+    fetch('/api/careers')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.data?.length > 0) {
+          setJobs(data.data);
+        }
+      })
+      .catch(() => {
+        // Keep empty
+      });
+  }, []);
 
   const filteredJobs = jobs.filter((job) => {
     const deptMatch = activeDept === 'All' || job.department === activeDept;
@@ -250,7 +172,7 @@ export default function CareersPage() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="text-[#A1A1AA] body-lg max-w-2xl"
           >
-            We&apos;re always looking for passionate individuals who believe in the power of
+            We're always looking for passionate individuals who believe in the power of
             decentralized technology. Explore our open positions and internship opportunities.
           </motion.p>
         </div>
@@ -345,7 +267,7 @@ export default function CareersPage() {
           {/* Job List */}
           <div className="space-y-4">
             {filteredJobs.map((job, i) => (
-              <JobCard key={job.id} job={job} index={i} />
+              <JobCard key={job._id || job.id || i} job={job} index={i} />
             ))}
           </div>
 
@@ -373,7 +295,7 @@ export default function CareersPage() {
             transition={{ duration: 0.8 }}
             className="heading-1 mb-6"
           >
-            Don&apos;t See a <span className="gradient-text">Perfect Fit</span>?
+            Don't See a <span className="gradient-text">Perfect Fit</span>?
           </motion.h2>
 
           <motion.p
@@ -383,8 +305,8 @@ export default function CareersPage() {
             transition={{ duration: 0.8, delay: 0.1 }}
             className="text-[#A1A1AA] body-md max-w-xl mx-auto mb-8"
           >
-            We&apos;re always interested in meeting talented people. Send us your resume and tell us
-            why you&apos;d be a great addition to the team.
+            We're always interested in meeting talented people. Send us your resume and tell us
+            why you'd be a great addition to the team.
           </motion.p>
 
           <motion.div

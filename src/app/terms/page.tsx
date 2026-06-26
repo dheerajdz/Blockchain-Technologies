@@ -141,7 +141,7 @@ export default function TermsPage() {
 
               <h2 className="text-white text-xl font-semibold mt-10 mb-4">9. Changes to Terms</h2>
               <p className="text-[#A1A1AA] leading-relaxed mb-6">
-                We reserve the right to modify or replace these Terms at any time. If a revision is material, we will provide at least 30 days&apos; notice prior to any new terms taking effect. What constitutes a material change will be determined at our sole discretion.
+                We reserve the right to modify or replace these Terms at any time. If a revision is material, we will provide at least 30 days' notice prior to any new terms taking effect. What constitutes a material change will be determined at our sole discretion.
               </p>
 
               <h2 className="text-white text-xl font-semibold mt-10 mb-4">10. Contact Us</h2>

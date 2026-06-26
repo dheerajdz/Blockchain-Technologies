@@ -9,26 +9,18 @@ import Footer from '@/components/home/Footer';
 /* ─── TYPES ─── */
 
 interface TeamMember {
-  id: string;
+  _id?: string;
+  id?: string;
   name: string;
   role: string;
-  image: string;
+  bio?: string;
+  image?: string;
   linkedin?: string;
   category?: 'leadership' | 'core' | 'intern';
+  order?: number;
 }
 
 /* ─── DATA ─── */
-
-const fallbackTeam: TeamMember[] = [
-  { id: '1', name: 'Dheeraj', role: 'Founder & CEO', image: '/team/dheeraj.jpg', linkedin: 'https://linkedin.com', category: 'leadership' },
-  { id: '2', name: 'Team Member', role: 'CTO', image: '/team/cto.jpg', linkedin: 'https://linkedin.com', category: 'leadership' },
-  { id: '3', name: 'Team Member', role: 'Lead Developer', image: '/team/lead.jpg', linkedin: 'https://linkedin.com', category: 'core' },
-  { id: '4', name: 'Team Member', role: 'Blockchain Engineer', image: '/team/blockchain.jpg', linkedin: 'https://linkedin.com', category: 'core' },
-  { id: '5', name: 'Team Member', role: 'UI/UX Designer', image: '/team/designer.jpg', linkedin: 'https://linkedin.com', category: 'core' },
-  { id: '6', name: 'Team Member', role: 'Full Stack Developer', image: '/team/fullstack.jpg', linkedin: 'https://linkedin.com', category: 'core' },
-  { id: '7', name: 'Intern', role: 'Frontend Intern', image: '/team/intern1.jpg', category: 'intern' },
-  { id: '8', name: 'Intern', role: 'Backend Intern', image: '/team/intern2.jpg', category: 'intern' },
-];
 
 const categoryLabels: Record<string, { title: string; subtitle: string }> = {
   leadership: { title: 'Leadership', subtitle: 'The visionaries steering BlocksScan forward.' },
@@ -119,7 +111,7 @@ function TeamSection({ category, members, startIndex }: { category: string; memb
       {/* Grid */}
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {members.map((member, i) => (
-          <TeamCard key={member.id} member={member} index={startIndex + i} />
+          <TeamCard key={member._id || member.id || i} member={member} index={startIndex + i} />
         ))}
       </div>
     </div>
@@ -129,14 +121,26 @@ function TeamSection({ category, members, startIndex }: { category: string; memb
 /* ─── PAGE ─── */
 
 export default function TeamPage() {
-  const [team, setTeam] = useState<TeamMember[]>(fallbackTeam);
+  const [team, setTeam] = useState<TeamMember[]>([]);
 
   useEffect(() => {
     fetch('/api/team')
       .then((res) => res.json())
       .then((data) => {
         if (data.success && data.data?.length > 0) {
-          setTeam(data.data);
+          // Map API data to TeamMember format with fallback category
+          const mappedMembers: TeamMember[] = data.data.map((m: any) => ({
+            _id: m._id,
+            id: m._id || m.id,
+            name: m.name,
+            role: m.role,
+            bio: m.bio,
+            image: m.image,
+            linkedin: m.linkedin,
+            category: m.category || 'core', // Default to 'core' if no category
+            order: m.order,
+          }));
+          setTeam(mappedMembers);
         }
       })
       .catch(() => {

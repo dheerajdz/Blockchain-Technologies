@@ -23,7 +23,21 @@ export async function POST(request: Request) {
     const admin = await getCurrentAdmin();
     if (!admin) return errorResponse('Unauthorized', 401);
 
-    const body = await request.json();
+    let body;
+    const contentType = request.headers.get('content-type') || '';
+    if (contentType.includes('application/json')) {
+      body = await request.json();
+    } else if (contentType.includes('application/x-www-form-urlencoded') || contentType.includes('multipart/form-data')) {
+      const formData = await request.formData();
+      body = Object.fromEntries(formData);
+    } else {
+      const text = await request.text();
+      try {
+        body = JSON.parse(text);
+      } catch {
+        return errorResponse('Invalid request body: expected JSON or form data', 400);
+      }
+    }
     const { title, slug, description, image, link } = body || {};
 
     if (!title || typeof title !== 'string') return errorResponse('title is required', 400);

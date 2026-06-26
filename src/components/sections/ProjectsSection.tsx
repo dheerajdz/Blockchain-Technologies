@@ -83,7 +83,7 @@ const projects = [
     ),
     visual: (
       <div className="w-full h-full flex flex-col justify-between bg-black/50 rounded-2xl border border-white/5 p-5 font-mono text-[9px] text-[#A0A0A0]">
-        <div className="text-white/45">{'// AI contract scanner'}</div>
+        <div className="text-white/45">// AI contract scanner</div>
         <div className="bg-[#080808] border border-white/10 rounded p-3 my-4 space-y-1">
           <div className="text-[#1B4FD8]">$ scan --target 0x5a3f...</div>
           <div>[Analyzing bytecode loops...]</div>
@@ -144,7 +144,7 @@ const projects = [
     ),
     visual: (
       <div className="w-full h-full flex flex-col justify-between bg-black/50 rounded-2xl border border-white/5 p-5 font-mono text-[9px] text-[#A0A0A0]">
-        <div className="text-white/30">{'// OpenScan API wrapper'}</div>
+        <div className="text-white/30">// OpenScan API wrapper</div>
         <div className="bg-black/60 border border-white/10 rounded-lg p-3 my-3">
           <span className="text-[#1B4FD8]">const</span> client = new OpenScanClient(&apos;mainnet&apos;);
           <br />
@@ -285,4 +285,5 @@ export default function ProjectsSection() {
       </div>
     </section>
   );
+}  );
 }

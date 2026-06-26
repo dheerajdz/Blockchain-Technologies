@@ -1,38 +1,21 @@
 'use client';
 
 import { motion } from 'motion/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Mail, MapPin, Phone, Send, Linkedin, Twitter } from 'lucide-react';
 import Navbar from '@/components/home/Navbar';
 import Footer from '@/components/home/Footer';
 
 /* ─── DATA ─── */
 
-const contactInfo = [
-  {
-    icon: Mail,
-    label: 'Email',
-    value: 'contact@blocksscan.io',
-    href: 'mailto:contact@blocksscan.io',
-  },
-  {
-    icon: Phone,
-    label: 'Phone',
-    value: '+91 (XXX) XXX-XXXX',
-    href: 'tel:+91XXXXXXXXXX',
-  },
-  {
-    icon: MapPin,
-    label: 'Address',
-    value: 'Mumbai, Maharashtra, India',
-    href: '#',
-  },
-];
-
-const socialLinks = [
-  { icon: Twitter, label: 'X (Twitter)', href: 'https://x.com/blocksscan', color: '#1DA1F2' },
-  { icon: Linkedin, label: 'LinkedIn', href: 'https://linkedin.com/company/blocksscan', color: '#0A66C2' },
-];
+interface ContactInfoData {
+  email: string;
+  phone: string;
+  address: string;
+  twitter?: string;
+  linkedin?: string;
+  officeHours?: string;
+}
 
 /* ─── COMPONENTS ─── */
 
@@ -208,6 +191,56 @@ function ContactForm() {
 /* ─── PAGE ─── */
 
 export default function ContactPage() {
+  const [contactInfo, setContactInfo] = useState<ContactInfoData | null>(null);
+
+  useEffect(() => {
+    fetch('/api/contact-info')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          setContactInfo(data.data);
+        }
+      })
+      .catch(() => {
+        // Use defaults
+      });
+  }, []);
+
+  const info = contactInfo || {
+    email: 'contact@blocksscan.io',
+    phone: '+91 (XXX) XXX-XXXX',
+    address: 'Mumbai, Maharashtra, India',
+    twitter: 'https://x.com/blocksscan',
+    linkedin: 'https://linkedin.com/company/blocksscan',
+    officeHours: 'Monday – Friday: 9:00 AM – 6:00 PM IST',
+  };
+
+  const contactItems = [
+    {
+      icon: Mail,
+      label: 'Email',
+      value: info.email,
+      href: `mailto:${info.email}`,
+    },
+    {
+      icon: Phone,
+      label: 'Phone',
+      value: info.phone,
+      href: `tel:${info.phone.replace(/\D/g, '')}`,
+    },
+    {
+      icon: MapPin,
+      label: 'Address',
+      value: info.address,
+      href: '#',
+    },
+  ];
+
+  const socialLinks = [
+    { icon: Twitter, label: 'X (Twitter)', href: info.twitter || 'https://x.com/blocksscan', color: '#1DA1F2' },
+    { icon: Linkedin, label: 'LinkedIn', href: info.linkedin || 'https://linkedin.com/company/blocksscan', color: '#0A66C2' },
+  ];
+
   return (
     <main className="relative min-h-screen bg-[#0A0A0A]">
       <Navbar />
@@ -261,12 +294,12 @@ export default function ContactPage() {
             {/* Right: Contact Info (takes 2 cols) */}
             <div className="lg:col-span-2 space-y-6">
               {/* Contact Cards */}
-              {contactInfo.map((info, i) => {
-                const Icon = info.icon;
+              {contactItems.map((item, i) => {
+                const Icon = item.icon;
                 return (
                   <motion.a
-                    key={info.label}
-                    href={info.href}
+                    key={item.label}
+                    href={item.href}
                     initial={{ opacity: 0, x: 30 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
@@ -277,9 +310,9 @@ export default function ContactPage() {
                       <Icon className="h-5 w-5 text-accent-300" strokeWidth={1.5} />
                     </div>
                     <div>
-                      <div className="label text-accent-300 mb-1">{info.label}</div>
+                      <div className="label text-accent-300 mb-1">{item.label}</div>
                       <div className="text-white group-hover:text-accent-300 transition-colors">
-                        {info.value}
+                        {item.value}
                       </div>
                     </div>
                   </motion.a>

@@ -1,21 +1,22 @@
 import { redirect } from 'next/navigation';
 import { getCurrentAdmin } from '@/lib/adminAuth';
-import { Plus, FileText } from 'lucide-react';
+import { Plus, Briefcase } from 'lucide-react';
 import DeleteButton from '../projects/DeleteButton';
 
 export const dynamic = 'force-dynamic';
 
-interface Blog {
+interface Career {
   id: string;
   title: string;
-  category: string;
-  author: string;
+  department: string;
+  location: string;
+  type: string;
   createdAt: string;
 }
 
-async function fetchBlogs(): Promise<Blog[]> {
+async function fetchCareers(): Promise<Career[]> {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/blogs`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/careers`, {
       cache: 'no-store',
     });
     const data = await res.json();
@@ -25,22 +26,22 @@ async function fetchBlogs(): Promise<Blog[]> {
   }
 }
 
-export default async function AdminBlogsPage() {
+export default async function AdminCareersPage() {
   const admin = await getCurrentAdmin();
   if (!admin) redirect('/admin/login');
 
-  const blogs = await fetchBlogs();
+  const careers = await fetchCareers();
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Blog Posts</h1>
-          <p className="text-[#71717A] text-sm mt-1">Manage your blog content</p>
+          <h1 className="text-2xl font-bold text-white">Career Vacancies</h1>
+          <p className="text-[#71717A] text-sm mt-1">Manage job openings and internships</p>
         </div>
-        <a href="/admin/blogs/new" className="btn btn-primary text-sm py-2.5 px-5 self-start">
+        <a href="/admin/careers/new" className="btn btn-primary text-sm py-2.5 px-5 self-start">
           <Plus className="h-4 w-4" strokeWidth={1.5} />
-          Add Blog
+          Add Vacancy
         </a>
       </div>
 
@@ -48,46 +49,48 @@ export default async function AdminBlogsPage() {
         <table className="w-full text-left text-sm">
           <thead className="bg-white/[0.03] text-[#A1A1AA]">
             <tr>
-              <th className="p-4 font-medium">Post</th>
-              <th className="p-4 font-medium hidden sm:table-cell">Category</th>
-              <th className="p-4 font-medium hidden md:table-cell">Author</th>
+              <th className="p-4 font-medium">Position</th>
+              <th className="p-4 font-medium hidden sm:table-cell">Department</th>
+              <th className="p-4 font-medium hidden md:table-cell">Type</th>
+              <th className="p-4 font-medium hidden lg:table-cell">Location</th>
               <th className="p-4 font-medium text-right">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-white/[0.04]">
-            {blogs.map((blog) => (
-              <tr key={blog.id} className="hover:bg-white/[0.02] transition-colors">
+            {careers.map((career) => (
+              <tr key={career.id} className="hover:bg-white/[0.02] transition-colors">
                 <td className="p-4">
                   <div className="flex items-center gap-3">
                     <div className="w-9 h-9 rounded-lg bg-[#2A468B]/15 border border-[#2A468B]/20 flex items-center justify-center shrink-0">
-                      <FileText className="h-4 w-4 text-[#5B7FC4]" strokeWidth={1.5} />
+                      <Briefcase className="h-4 w-4 text-[#5B7FC4]" strokeWidth={1.5} />
                     </div>
                     <div>
-                      <p className="text-white font-medium">{blog.title}</p>
-                      <p className="text-[#71717A] text-xs">{new Date(blog.createdAt).toLocaleDateString()}</p>
+                      <p className="text-white font-medium">{career.title}</p>
+                      <p className="text-[#71717A] text-xs">{new Date(career.createdAt).toLocaleDateString()}</p>
                     </div>
                   </div>
                 </td>
                 <td className="p-4 hidden sm:table-cell">
                   <span className="inline-flex px-2.5 py-1 rounded-full bg-[#2A468B]/10 border border-[#2A468B]/20 text-[#5B7FC4] text-xs">
-                    {blog.category}
+                    {career.department}
                   </span>
                 </td>
-                <td className="p-4 text-[#A1A1AA] hidden md:table-cell">{blog.author}</td>
+                <td className="p-4 text-[#A1A1AA] hidden md:table-cell">{career.type}</td>
+                <td className="p-4 text-[#A1A1AA] hidden lg:table-cell">{career.location}</td>
                 <td className="p-4 text-right">
-                  <DeleteButton id={blog.id} resource="blogs" />
+                  <DeleteButton id={career.id} resource="careers" />
                 </td>
               </tr>
             ))}
-            {blogs.length === 0 && (
+            {careers.length === 0 && (
               <tr key="empty">
-                <td colSpan={4} className="p-12 text-center">
+                <td colSpan={5} className="p-12 text-center">
                   <div className="flex flex-col items-center gap-3">
                     <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center">
-                      <FileText className="h-6 w-6 text-[#71717A]" strokeWidth={1.5} />
+                      <Briefcase className="h-6 w-6 text-[#71717A]" strokeWidth={1.5} />
                     </div>
-                    <p className="text-[#71717A]">No blog posts yet. Add your first blog.</p>
-                    <a href="/admin/blogs/new" className="text-[#5B7FC4] hover:underline text-sm">Add Blog →</a>
+                    <p className="text-[#71717A]">No vacancies yet. Add your first job opening.</p>
+                    <a href="/admin/careers/new" className="text-[#5B7FC4] hover:underline text-sm">Add Vacancy →</a>
                   </div>
                 </td>
               </tr>
@@ -98,5 +101,3 @@ export default async function AdminBlogsPage() {
     </div>
   );
 }
-
-

@@ -9,7 +9,8 @@ import Footer from '@/components/home/Footer';
 /* ─── TYPES ─── */
 
 interface Blog {
-  id: string;
+  _id?: string;
+  id?: string;
   title: string;
   category: string;
   content: string;
@@ -18,57 +19,6 @@ interface Blog {
 }
 
 /* ─── DATA ─── */
-
-const fallbackBlogs: Blog[] = [
-  {
-    id: '1',
-    title: 'The Future of XDC Network in 2025',
-    category: 'Blockchain',
-    content: 'Exploring the latest developments and upcoming features in the XDC ecosystem that are set to revolutionize enterprise blockchain adoption.',
-    author: 'Dheeraj',
-    createdAt: '2025-06-15',
-  },
-  {
-    id: '2',
-    title: 'Building Secure Smart Contracts: Best Practices',
-    category: 'Development',
-    content: 'A comprehensive guide to writing audited, secure smart contracts with real-world examples and common pitfalls to avoid.',
-    author: 'Team',
-    createdAt: '2025-06-10',
-  },
-  {
-    id: '3',
-    title: 'AI Meets Blockchain: The OpenScan Story',
-    category: 'AI',
-    content: 'How we integrated artificial intelligence with blockchain analytics to create smarter, more intuitive explorer experiences.',
-    author: 'Team',
-    createdAt: '2025-06-05',
-  },
-  {
-    id: '4',
-    title: 'Cross-Chain Interoperability: Challenges and Solutions',
-    category: 'Infrastructure',
-    content: 'Deep dive into the technical challenges of cross-chain communication and how modern protocols are solving them.',
-    author: 'Dheeraj',
-    createdAt: '2025-05-28',
-  },
-  {
-    id: '5',
-    title: 'Understanding Zero-Knowledge Proofs',
-    category: 'Development',
-    content: 'A beginner-friendly introduction to ZK proofs and their applications in blockchain privacy and scalability.',
-    author: 'Team',
-    createdAt: '2025-05-20',
-  },
-  {
-    id: '6',
-    title: 'The State of DeFi in 2025',
-    category: 'DeFi',
-    content: 'Analyzing the current DeFi landscape, emerging protocols, and where decentralized finance is heading next.',
-    author: 'Team',
-    createdAt: '2025-05-15',
-  },
-];
 
 /* ─── COMPONENTS ─── */
 
@@ -131,7 +81,7 @@ function BlogCard({ blog, index }: { blog: Blog; index: number }) {
 /* ─── PAGE ─── */
 
 export default function BlogPage() {
-  const [blogs, setBlogs] = useState<Blog[]>(fallbackBlogs);
+  const [blogs, setBlogs] = useState<Blog[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
 
@@ -256,7 +206,7 @@ export default function BlogPage() {
           {/* Blog Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredBlogs.map((blog, i) => (
-              <BlogCard key={blog.id} blog={blog} index={i} />
+              <BlogCard key={blog._id || blog.id || i} blog={blog} index={i} />
             ))}
           </div>
 

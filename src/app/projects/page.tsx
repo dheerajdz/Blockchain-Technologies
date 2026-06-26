@@ -3,7 +3,6 @@
 import { motion } from 'motion/react';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import { ExternalLink, Github, Globe, Bot, Blocks, MessageSquare, FileCode, LayoutGrid } from 'lucide-react';
 import Navbar from '@/components/home/Navbar';
 import Footer from '@/components/home/Footer';
@@ -11,76 +10,19 @@ import Footer from '@/components/home/Footer';
 /* ─── TYPES ─── */
 
 interface Project {
-  id: string;
+  _id?: string;
+  id?: string;
   title: string;
   description: string;
-  technologies: string[];
-  image: string;
+  technologies?: string[];
+  image?: string;
   github?: string;
   demo?: string;
   category?: string;
+  link?: string;
 }
 
 /* ─── DATA ─── */
-
-const fallbackProjects: Project[] = [
-  {
-    id: '1',
-    title: 'XDCScan Explorer',
-    description: 'Official XDC Network block explorer with real-time transaction tracking, smart contract verification, and advanced analytics dashboard serving 50K+ daily users.',
-    technologies: ['Next.js', 'TypeScript', 'XDC', 'Tailwind'],
-    image: '/projects/xdcscan.jpg',
-    github: 'https://github.com/blocksscan/xdcscan',
-    demo: 'https://xdcscan.io',
-    category: 'Explorer',
-  },
-  {
-    id: '2',
-    title: 'OpenScan AI',
-    description: 'AI-powered blockchain analytics platform with intelligent transaction monitoring, anomaly detection, and predictive insights for enterprise clients.',
-    technologies: ['React', 'Python', 'TensorFlow', 'PostgreSQL'],
-    image: '/projects/openscan.jpg',
-    github: 'https://github.com/blocksscan/openscan-ai',
-    demo: 'https://openscan.ai',
-    category: 'AI',
-  },
-  {
-    id: '3',
-    title: 'GCX Platform',
-    description: 'Next-generation cross-chain interoperability protocol enabling seamless asset transfers and communication between heterogeneous blockchain networks.',
-    technologies: ['Solidity', 'Node.js', 'Graph Protocol', 'Redis'],
-    image: '/projects/gcx.jpg',
-    github: 'https://github.com/blocksscan/gcx',
-    category: 'Infrastructure',
-  },
-  {
-    id: '4',
-    title: 'XDCGram',
-    description: 'Social messaging platform built on XDC Network with token incentives, encrypted messaging, and decentralized identity verification.',
-    technologies: ['React Native', 'Firebase', 'XDC', 'WebRTC'],
-    image: '/projects/xdcgram.jpg',
-    demo: 'https://xdcgram.app',
-    category: 'Social',
-  },
-  {
-    id: '5',
-    title: 'BlocksScan API',
-    description: 'High-performance REST and GraphQL API suite for blockchain data access, supporting multiple networks with sub-100ms response times.',
-    technologies: ['Node.js', 'GraphQL', 'Docker', 'Kubernetes'],
-    image: '/projects/api.jpg',
-    github: 'https://github.com/blocksscan/api',
-    category: 'Infrastructure',
-  },
-  {
-    id: '6',
-    title: 'Smart Contract Library',
-    description: 'Audited, open-source smart contract templates for common DeFi patterns including staking, vesting, and multi-sig wallets.',
-    technologies: ['Solidity', 'Hardhat', 'OpenZeppelin', 'Foundry'],
-    image: '/projects/contracts.jpg',
-    github: 'https://github.com/blocksscan/contracts',
-    category: 'DeFi',
-  },
-];
 
 const categories = ['All', 'Explorer', 'AI', 'Infrastructure', 'Social', 'DeFi'];
 
@@ -95,9 +37,12 @@ const projectIcons: Record<string, React.ElementType> = {
   'Smart Contract Library': FileCode,
 };
 
+function getProjectIcon(title: string) {
+  return projectIcons[title] || FileCode;
+}
+
 function ProjectPlaceholder({ title }: { title: string }) {
-  const iconKey = title as keyof typeof projectIcons;
-  const Icon = projectIcons[iconKey] || FileCode;
+  const Icon = getProjectIcon(title);
   return (
     <div className="w-full h-full bg-gradient-to-br from-accent-500/30 to-accent-600/40 flex items-center justify-center">
       <Icon className="h-12 w-12 text-accent-300/60" strokeWidth={1.5} />
@@ -110,7 +55,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
   const [imageError, setImageError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
 
-  const hasValidImage = project.image && project.image.length > 0 && !imageError;
+  const hasValidImage = !!project.image && project.image.length > 0 && !imageError;
 
   return (
     <motion.div
@@ -132,7 +77,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
           {hasValidImage ? (
             <>
               <Image
-                src={project.image}
+                src={project.image || '/projects/placeholder.svg'}
                 alt={project.title}
                 fill
                 className={`object-cover transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
@@ -194,7 +139,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
 
         {/* Tech tags */}
         <div className="flex flex-wrap gap-2">
-          {project.technologies.map((tech) => (
+          {project.technologies?.map((tech) => (
             <span
               key={tech}
               className="px-2.5 py-1 rounded-full bg-accent-500/10 text-accent-300 text-xs font-medium border border-accent-500/20"
@@ -211,7 +156,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
 /* ─── PAGE ─── */
 
 export default function ProjectsPage() {
-  const [projects, setProjects] = useState<Project[]>(fallbackProjects);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [activeCategory, setActiveCategory] = useState('All');
 
   useEffect(() => {
@@ -301,7 +246,7 @@ export default function ProjectsPage() {
           {/* Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
             {filteredProjects.map((project, i) => (
-              <ProjectCard key={project.id} project={project} index={i} />
+              <ProjectCard key={project._id || project.id || i} project={project} index={i} />
             ))}
           </div>
 
@@ -348,12 +293,12 @@ export default function ProjectsPage() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="flex flex-col sm:flex-row gap-4 justify-center"
           >
-            <Link href="/contact" className="btn btn-primary">
+            <a href="/contact" className="btn btn-primary">
               Start a Project
-            </Link>
-            <Link href="/services" className="btn btn-outline">
+            </a>
+            <a href="/services" className="btn btn-outline">
               Explore Services
-            </Link>
+            </a>
           </motion.div>
         </div>
       </section>

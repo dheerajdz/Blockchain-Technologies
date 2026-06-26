@@ -69,12 +69,10 @@ export default function HeroSection() {
   }, [mouseX, mouseY]);
 
   // Check for reduced motion preference
-  const [reducedMotion, setReducedMotion] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  });
+  const [reducedMotion, setReducedMotion] = useState(false);
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setReducedMotion(mq.matches);
     const handler = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
     mq.addEventListener('change', handler);
     return () => mq.removeEventListener('change', handler);
@@ -184,7 +182,7 @@ export default function HeroSection() {
               transition={{ duration: 0.8, delay: 0.4 }}
               className="text-lg md:text-xl text-[#A1A1AA] max-w-xl mx-auto lg:mx-0 mb-10 leading-relaxed font-body"
             >
-              We don&apos;t just build blockchain products.
+              We don't just build blockchain products.
               We craft <span className="text-white font-semibold">immersive experiences</span> that transform
               how you interact with decentralized technology.
             </motion.p>

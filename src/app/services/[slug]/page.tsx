@@ -1,9 +1,9 @@
 'use client';
 
 import { motion } from 'motion/react';
+import { useState, useEffect } from 'react';
 import { ArrowLeft, Check, ArrowRight } from 'lucide-react';
 import { useParams } from 'next/navigation';
-import Link from 'next/link';
 import Navbar from '@/components/home/Navbar';
 import Footer from '@/components/home/Footer';
 
@@ -108,8 +108,15 @@ const services: Service[] = [
 /* ─── PAGE ─── */
 
 export default function ServiceDetailPage() {
-  const slug = (useParams()?.slug as string) ?? '';
-  const service = services.find((s) => s.slug === slug) || null;
+  const params = useParams();
+  const [service, setService] = useState<Service | null>(null);
+
+  const slug = params?.slug as string;
+
+  useEffect(() => {
+    const found = services.find((s) => s.slug === slug);
+    setService(found || null);
+  }, [slug]);
 
   if (!service) {
     return (
@@ -118,10 +125,10 @@ export default function ServiceDetailPage() {
         <div className="pt-32 pb-20 container text-center">
           <h1 className="heading-1 mb-4">Service Not Found</h1>
           <p className="text-[#A1A1AA] mb-8">The service you are looking for does not exist.</p>
-          <Link href="/services" className="btn btn-primary">
+          <a href="/services" className="btn btn-primary">
             <ArrowLeft className="h-4 w-4" strokeWidth={1.5} />
             Back to Services
-          </Link>
+          </a>
         </div>
         <Footer />
       </main>

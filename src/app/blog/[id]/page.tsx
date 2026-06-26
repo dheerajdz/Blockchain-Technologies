@@ -4,7 +4,6 @@ import { motion } from 'motion/react';
 import { useState, useEffect } from 'react';
 import { ArrowLeft, Calendar, User, Clock } from 'lucide-react';
 import { useParams } from 'next/navigation';
-import Link from 'next/link';
 import Navbar from '@/components/home/Navbar';
 import Footer from '@/components/home/Footer';
 
@@ -95,10 +94,10 @@ export default function BlogPostPage() {
         <div className="pt-32 pb-20 container text-center">
           <h1 className="heading-1 mb-4">Article Not Found</h1>
           <p className="text-[#A1A1AA] mb-8">The article you are looking for does not exist.</p>
-          <Link href="/blog" className="btn btn-primary">
+          <a href="/blog" className="btn btn-primary">
             <ArrowLeft className="h-4 w-4" strokeWidth={1.5} />
             Back to Blog
-          </Link>
+          </a>
         </div>
         <Footer />
       </main>
@@ -208,10 +207,10 @@ export default function BlogPostPage() {
 
             {/* Back to blog */}
             <div className="mt-10 text-center">
-              <Link href="/blog" className="btn btn-outline">
+              <a href="/blog" className="btn btn-outline">
                 <ArrowLeft className="h-4 w-4" strokeWidth={1.5} />
                 Back to All Articles
-              </Link>
+              </a>
             </div>
           </motion.div>
         </div>

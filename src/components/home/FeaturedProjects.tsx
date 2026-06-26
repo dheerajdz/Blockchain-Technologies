@@ -15,6 +15,7 @@ interface Project {
   link?: string;
 }
 
+// Icon mapping for project placeholders
 const projectIcons: Record<string, React.ElementType> = {
   'XDCScan Explorer': Globe,
   'OpenScan AI': Bot,
@@ -22,6 +23,11 @@ const projectIcons: Record<string, React.ElementType> = {
   'XDCGram': MessageSquare,
 };
 
+function getProjectIcon(title: string) {
+  return projectIcons[title] || FileCode;
+}
+
+// Fallback static projects
 const fallbackProjects: Project[] = [
   {
     id: '1',
@@ -59,8 +65,7 @@ const fallbackProjects: Project[] = [
 ];
 
 function ProjectPlaceholder({ title }: { title: string }) {
-  const iconKey = title as keyof typeof projectIcons;
-  const Icon = projectIcons[iconKey] || FileCode;
+  const Icon = getProjectIcon(title);
   return (
     <div className="w-full h-full bg-gradient-to-br from-[#2A468B] to-[#4C6FC2] flex items-center justify-center">
       <Icon className="h-12 w-12 text-white/80" strokeWidth={1.5} />
@@ -87,6 +92,7 @@ function ProjectCard({ project, index, featured = false }: { project: Project; i
         featured ? 'md:col-span-2 md:row-span-2' : ''
       }`}
     >
+      {/* Image */}
       <div className={`relative overflow-hidden flex-shrink-0 ${featured ? 'h-64 md:h-80' : 'h-48'}`}>
         <motion.div
           animate={hovered ? { scale: 1.05 } : { scale: 1 }}
@@ -111,12 +117,14 @@ function ProjectCard({ project, index, featured = false }: { project: Project; i
           )}
         </motion.div>
 
+        {/* Overlay on hover */}
         <motion.div
           className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"
           animate={hovered ? { opacity: 1 } : { opacity: 0 }}
           transition={{ duration: 0.3 }}
         />
 
+        {/* Featured badge */}
         {featured && (
           <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-white/90 backdrop-blur-sm text-[#2A468B] text-xs font-semibold">
             Featured
@@ -124,6 +132,7 @@ function ProjectCard({ project, index, featured = false }: { project: Project; i
         )}
       </div>
 
+      {/* Content */}
       <div className="p-5">
         <h3 className={`font-semibold text-[#18181B] mb-2 ${featured ? 'text-xl' : 'text-lg'}`}>
           {project.title}
@@ -132,6 +141,7 @@ function ProjectCard({ project, index, featured = false }: { project: Project; i
           {project.description}
         </p>
 
+        {/* Tech tags */}
         <div className="flex flex-wrap gap-2 mb-4">
           {project.technologies.map((tech) => (
             <span
@@ -143,6 +153,7 @@ function ProjectCard({ project, index, featured = false }: { project: Project; i
           ))}
         </div>
 
+        {/* View Project link */}
         <div className="pt-3 border-t border-black/5">
           <a
             href={project.link || '#'}
@@ -159,8 +170,10 @@ function ProjectCard({ project, index, featured = false }: { project: Project; i
 
 export default function FeaturedProjects() {
   const [projects, setProjects] = useState<Project[]>(fallbackProjects);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Attempt to fetch from API, fallback to static on error
     fetch('/api/projects')
       .then((res) => res.json())
       .then((data) => {
@@ -170,7 +183,8 @@ export default function FeaturedProjects() {
       })
       .catch(() => {
         // Keep fallback projects
-      });
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   const featured = projects.find((p) => p.featured) || projects[0];
@@ -179,6 +193,7 @@ export default function FeaturedProjects() {
   return (
     <section id="projects" className="section section-light">
       <div className="container">
+        {/* Header */}
         <div className="text-center mb-16">
           <motion.span
             initial={{ opacity: 0, y: 20 }}
@@ -211,6 +226,7 @@ export default function FeaturedProjects() {
           </motion.p>
         </div>
 
+        {/* Bento Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           <ProjectCard project={featured} index={0} featured />
           {others.map((project, i) => (

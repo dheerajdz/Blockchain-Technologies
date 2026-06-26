@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation';
 import { getCurrentAdmin } from '@/lib/adminAuth';
-import AdminNav from '../AdminNav';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Mail, User, MessageSquare, Clock } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
@@ -32,56 +31,50 @@ export default async function AdminContactsPage() {
   const contacts = await fetchContacts();
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-white relative overflow-hidden">
-      <div className="absolute inset-0 hero-glow opacity-50" />
-      <div className="absolute inset-0 grid-pattern opacity-20" />
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold text-white">Contact Submissions</h1>
+        <p className="text-[#71717A] text-sm mt-1">Messages from your website visitors</p>
+      </div>
 
-      <header className="relative z-10 border-b border-[#1E1E1E] px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-accent-500 flex items-center justify-center">
-            <span className="text-white font-bold text-sm">B</span>
-          </div>
-          <div>
-            <h1 className="text-lg font-bold text-white">BlocksScan Admin</h1>
-            <p className="text-[#71717A] text-xs">Welcome back, {admin.email}</p>
-          </div>
-        </div>
-        <AdminNav />
-      </header>
-
-      <main className="relative z-10 max-w-5xl mx-auto p-6 space-y-6">
-        <a href="/admin" className="inline-flex items-center gap-2 text-sm text-[#A1A1AA] hover:text-white transition-colors">
-          <ArrowLeft className="h-4 w-4" />
-          Back to Dashboard
-        </a>
-
-        <h2 className="text-xl font-semibold text-white">Contact Submissions</h2>
-
-        <div className="space-y-4">
-          {contacts.map((contact) => (
-            <div key={contact.id} className="card p-5 space-y-3">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+      <div className="space-y-4">
+        {contacts.map((contact) => (
+          <div key={contact.id} className="card p-5 space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-[#2A468B]/15 border border-[#2A468B]/20 flex items-center justify-center shrink-0">
+                  <span className="text-[#5B7FC4] font-semibold text-sm">
+                    {contact.name.charAt(0).toUpperCase()}
+                  </span>
+                </div>
                 <div>
                   <p className="text-white font-medium">{contact.name}</p>
-                  <a href={`mailto:${contact.email}`} className="text-sm text-accent-300 hover:underline">
+                  <a href={`mailto:${contact.email}`} className="text-sm text-[#5B7FC4] hover:underline">
                     {contact.email}
                   </a>
                 </div>
-                <p className="text-xs text-[#71717A]">
-                  {new Date(contact.createdAt).toLocaleString()}
-                </p>
               </div>
-              <hr className="border-white/5" />
-              <p className="text-[#A1A1AA] text-sm whitespace-pre-wrap">{contact.message}</p>
+              <div className="flex items-center gap-2 text-[#71717A] text-xs">
+                <Clock className="h-3.5 w-3.5" strokeWidth={1.5} />
+                {new Date(contact.createdAt).toLocaleString()}
+              </div>
             </div>
-          ))}
-          {contacts.length === 0 && (
-            <div className="card p-8 text-center text-[#71717A]">
-              No contact submissions yet.
+            <div className="bg-white/[0.02] rounded-xl p-4 border border-white/[0.04]">
+              <p className="text-[#A1A1AA] text-sm whitespace-pre-wrap leading-relaxed">{contact.message}</p>
             </div>
-          )}
-        </div>
-      </main>
+          </div>
+        ))}
+        {contacts.length === 0 && (
+          <div className="card p-12 text-center">
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center">
+                <Mail className="h-6 w-6 text-[#71717A]" strokeWidth={1.5} />
+              </div>
+              <p className="text-[#71717A]">No contact submissions yet.</p>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
